@@ -1,0 +1,82 @@
+% layout 'default';
+% title 'Welcome';
+
+<style>
+  td {
+    font-size: 1.1rem;
+  }
+  .show-data {
+    display:table-row;
+  }
+  .hide-data {
+    display:none;
+  }
+</style>
+
+<section class="hero" style="margin-top:80px;margin-bottom:50px;>
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        POD Browser / Kwalitee Checker
+      </h1>
+      <h2 class="subtitle">
+        Browse documentation / view a module's hierarchy / check the quality of the code.
+      </h2>
+    </div>
+  </div>
+  <hr />
+</section>
+
+<section class="section" style="padding-top:1 rem; padding-bottom: 1rem;">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-four-fifths style="margin: 0px 50px;">
+        <table id="module-list" class="table is-striped is-fullwidth is-bordered is-hoverable">
+          <thead>
+            <tr>
+              <th width="60%">Module</th>
+              <th width="10%">Compiles</th>
+              <th width="10%">Complexity</th>
+              <th width="10%">Pod</th>
+              <th width="10%">Info</th>
+            </tr>
+          </thead>
+          <tbody>
+            % for my $module (@$modules) {
+                <tr>
+                  <td><%= $module->{module} %></td>
+                  <td style="text-align:center;"><%= $module->{compiles} %></td>
+                  % if ( $module->{complexity} > 10 ) {
+                    <td style="text-align:center;background-color:#ef9a9a;"><%= $module->{complexity} %></td>
+                  % } else {
+                    <td style="text-align:center;"><%= $module->{complexity} %></td>
+                  % }
+                  % if ( $module->{pod_score} < 3 ) {
+                     <td style="text-align:center;background-color:#ef9a9a;"><a href="#"><i class="material-icons" style="text-align:center;color:gray;">clear</i></a></td>
+                  % } else {
+                     <td><a href="<%= $module->{pod} %>"><i class="material-icons" style="text-align:center;">link</i></a></td>
+                  % }
+                  <td></td>
+                </tr>
+            % }
+          </tbody
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  $( document).ready(function() {
+    $('#podname-button').on('click', function(e) {
+      e.preventDefault;
+
+      var module = $('#podname').val();
+      console.log('module : ' + module);
+      window.location.replace('/pod/' + module);
+    });
+  });
+</script>
+<script type="text/javascript">
+    $('#module-list').DataTable();
+</script>
