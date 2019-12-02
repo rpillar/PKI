@@ -16,7 +16,7 @@ my $dbh = DBI->connect("dbi:SQLite:critic.db","","") or die "Could not connect";
 _initialize();
 
 # try to import every .pm file in /lib
-my $path = '/Users/richardpillar/perl/Stylus-C/Stylus/lib/';
+my $path = '/home/rpillar/123reg/new/OTTCatalyst/lib/';
 my $dir = path($path);
 my $iter = $dir->iterator({
     recurse         => 1,
@@ -73,7 +73,8 @@ sub _collect_metrics_data {
 
     my $pc = Pod::Coverage->new( package => $module );
     my $coverage = $pc->coverage;
-
+print('POD coverage for - ' . $module . "\n");
+p $coverage;
     my @file_array = ( $file->stringify );
     my $analysis = $analyzer->analyze_files( @file_array );
 

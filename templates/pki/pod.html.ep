@@ -1,11 +1,20 @@
 % layout 'default';
 % title 'POD Viewer';
-<style>
-            h1 {
-                margin-left: -2rem;
+          <style>
+            body {
+                padding-top:70px;
             }
-            h2,h3 {
-                margin-left:  -1rem;
+            .sidenav {
+                background-color: #151515;
+                color: rgba(255,255,255,0.5);
+            }
+            .sidenav li>a {
+                height: 24px;
+                line-height: 28px;
+                color: rgba(255,255,255,0.5);;
+            }
+            .divider {
+                background-color: rgba(255,255,255,0.2);
             }
             pre, code {
                 background-color: rgb(214, 255, 223);
@@ -21,8 +30,56 @@
             pre code {
                 padding: 0;
             }
-            p {
-                line-height: 1.5;
-            }
-</style>
-<p style="margin-top: 70px;"><%== $pod %></p>
+	    l:after {content:"";display:table;clear:both;}
+	    dd {
+	        padding:.5em 0;
+	    }
+	    dl {
+	        width:100%;
+	    }
+	    dt, dd {
+	        display:inline-block;
+	        width:30%;
+	    }
+	    dt {
+	        text-align:right;
+	        font-weight:bold;
+	        clear:left;
+	        float:left;
+	    }
+	    dd {
+	        width:70%;
+	        padding-left:1em;
+	        clear:right;
+	    }
+	    dd + dd {
+	        float:right;
+	        clear:both;
+	    }
+	    dt:first-child {
+	        padding-top:.5em;
+	    }
+	    dd + dt {
+	       clear:both;
+	       padding-top:.5em;
+	    }
+	    dt + dt {
+	        width: 100%;
+	        float: none;
+	        padding: 0 70% 0 0;
+	    }
+	    dt + dt + dd {
+	        margin-top: -2em;
+	    }
+	    dt + dt + dd + dt {
+	        margin-top: 2em;
+	    }
+        </style>
+<p><%== $pod %></p>
+
+<script>
+  var scroll = new SmoothScroll('a[href*="#"]', {
+    header: '[navbarbasicExample]',
+    offset: function(anchor, toggle) { return 75; }
+  });
+</script>

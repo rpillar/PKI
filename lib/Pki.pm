@@ -1,7 +1,7 @@
-package PKI;
+package Pki;
 use Mojo::Base 'Mojolicious';
 
-use PKI::Model;
+use Pki::Model;
 
 # This method will run once at server start
 sub startup {
@@ -18,8 +18,7 @@ sub startup {
 
   # routes
   $r->get('/')->to(controller => 'pki', action => 'welcome');
-  $r->get('/dashboard')->to(controller => 'pki', action => 'dashboard');
-  $r->get('/pod/:module')->to(controller => 'pki', action => 'pod');
+  $r->get('/:module')->to(controller => 'pki', action => 'pod');
   $r->get('/info/:module')->to(controller => 'pki', action => 'info');
 }
 

@@ -1,4 +1,4 @@
-package PKI::Model;
+package Pki::Model;
 
 use Mojo::Base -base;
 

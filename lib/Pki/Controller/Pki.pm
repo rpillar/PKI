@@ -1,4 +1,4 @@
-package PKI::Controller::Pki;
+package Pki::Controller::Pki;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Config;
@@ -14,7 +14,7 @@ sub welcome {
 
   # Render template "pki/welcome.html.ep" with message
   my $modules = $self->_modules();
-  $self->render(modules => $modules);
+  $self->render(template => 'pki/welcome', modules => $modules);
 }
 
 sub dashboard {
@@ -30,7 +30,7 @@ sub info {
   my $module = $self->param('module');
 
   # Render template "pki/info.html.ep"
-  $self->render(template => 'test/info' );
+  $self->render(template => 'pki/info' );
 }
 
 sub pod {
@@ -38,7 +38,9 @@ sub pod {
 
   my $module = $self->param('module');
 
-  my $path = Pod::Simple::Search->new->inc(0)->find($module, ("/Users/richardpillar/perl/Stylus-C/Stylus/lib"));
+  my $path = Pod::Simple::Search->new->inc(0)->find($module, ("/home/rpillar/123reg/new/OTTCatalyst/lib"));
+
+  return $self->res->code(301) && $self->redirect_to("https://metacpan.org/pod/$module") unless $path && -r $path;
 
   my $parser = MetaCPAN::Pod::XHTML->new;
   $parser->$_('') for qw(html_header html_footer);
@@ -48,15 +50,22 @@ sub pod {
   $parser->output_string(\my $output);
   $parser->parse_file($path);
 
-  # Render template "test/pod.html.ep" with pod output
-  $self->render(template => 'test/pod', pod => $output );
+  # add a sidenav for the links etc.
+  $output =~ s/\<ul id="index"\>/\<ul id="slide-out" class="sidenav sidenav-fixed" style="padding-top:20px;"\>/;
+  $output =~ s/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>\<div class=\"divider\"\>\<\/div\>/;
+  $output =~ s/\<li\>\<a href=\"\#SYNOPSIS\"\>SYNOPSIS\<\/a\>\<\/li\>/\<li\>\<a href=\"\#SYNOPSIS\"\>SYNOPSIS\<\/a\>\<\/li\>\<div class=\"divider\"\>\<\/div\>/;
+  $output =~ s/\<li\>\<a href=\"\#DESCRIPTION\"\>DESCRIPTION\<\/a\>\<\/li\>/\<li\>\<a href=\"\#DESCRIPTION\"\>DESCRIPTION\<\/a\>\<\/li\>\<div class=\"divider\"\>\<\/div\>/;
+  $output =~ s/\<li\>\<a href=\"\#USAGE\"\>USAGE\<\/a\>\<\/li\>/\<li\>\<a href=\"\#USAGE\"\>USAGE\<\/a\>\<\/li\>\<div class=\"divider\"\>\<\/div\>/;
+  $output =~ s/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>\<div class=\"divider\"\>\<\/div\>/;
+
+  # Render template "pki/pod.html.ep" with pod output
+  $self->render(template => 'pki/pod', pod => $output );
 }
 
 sub _modules {
   my $self = shift;
 
   my @modules;
-
   my $critic_query = "select distinct(module) from critic";
   my $critic_stmt  = $dbh->prepare( $critic_query );
   my $summary_query = "select * from summary where module = ?";
@@ -70,7 +79,7 @@ sub _modules {
       module     => $module,
       compiles   => "Y",
       complexity => $summary_data->{max_complexity} ? $summary_data->{max_complexity} : 0,
-      pod        => '/pod/' . $module,
+      pod        => '/' . $module,
       pod_score  => $summary_data->{pod},
       hierarchy  => "N"
     } 
