@@ -5,6 +5,7 @@
     <link href="/css/bulma.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/dataTables.bulma.min.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,700" rel='stylesheet' type='text/css'>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="/js/jquery.dataTables.min.js"></script>
     <script src="/js/dataTables.bulma.min.js"></script>
@@ -12,6 +13,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15/dist/smooth-scroll.polyfills.min.js"></script>
     <style>
+      html, body {
+          height: 100%;
+      }
+      .page-wrap {
+          min-height: 100%;
+          margin-bottom:-100px;
+      }
+      .page-wrap:after {
+          content: "";
+          display: block;
+      }
       h1 {
           font-size: 3rem;
       }
@@ -19,31 +31,56 @@
           font-size: 2.5rem;
       }
       .container {
-          width: 80%;
+          width: 70%;
+      }
+      #footer, .page-wrap:after {
+          height:100px;
+      }
+      #footer {
+          position: fixed;
+          left:0;
+          bottom:0;
+          width:100%;
+          text-align: center;
+          background-color: rgb(34, 34, 34);;
+          padding-top: 5px;
+          z-index: 999;
       }
     </style>
   </head>
   <body>
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-      <div class="container">
-        <div class="navbar-brand">
-          <a class="navbar-item" href="">
-            <span style="font-size:2rem;color:#00897b"><i class="material-icons" style="color: blue;">invert_colors</i></span>
-          </a>
-        </div>
-
-        <div id="navbarBasicExample" class="navbar-menu">
-          <div class="navbar-start">
-            <a class="navbar-item is-size-5" href="/">
-              <span style="border-bottom:3px solid lightblue;">POD Browser</span>
+    <div class="page-wrap">
+      <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+        <div class="container">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="">
+              <span style="font-size:2rem;color:#00897b"><i class="material-icons" style="color: blue;">invert_colors</i></span>
             </a>
           </div>
+
+          <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+              <a class="navbar-item is-size-5" href="/">
+                <span style="border-bottom:3px solid lightblue;">POD Browser</span>
+              </a>
+            </div>
+          </div>
         </div>
+      </nav>
+      <div class="container">
+        <%= content %>
       </div>
-    </nav>
-    <div class="container">
-      <%= content %>
     </div>
 
+    <div id="footer" style="border-bottom:5px solid gray; margin-top:30px;">
+      <div class="container">
+        <div class="row" style="margin-top:15px;">
+          <a href="www.developontheweb.co.uk" style="letter-spacing:2px; text-transform:uppercase;font-size:28px;font-family:Raleway;font-weight:500;color:#3bc492;padding-top:15px;">
+            <span style="padding-bottom:2px; border-bottom:2px solid black;">developonth
+              <span style="font-weight:700;"><em>web</em></span>
+            </span>
+          </a>
+        </div>
+      </div>
   </body>
 </html>

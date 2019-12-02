@@ -5,8 +5,9 @@
                 padding-top:70px;
             }
             .sidenav {
-                background-color: #151515;
+                background-color: #222222;
                 color: rgba(255,255,255,0.5);
+                border-bottom:5px solid gray;
             }
             .sidenav li>a {
                 height: 24px;

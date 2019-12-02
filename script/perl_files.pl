@@ -16,7 +16,7 @@ my $dbh = DBI->connect("dbi:SQLite:critic.db","","") or die "Could not connect";
 _initialize();
 
 # try to import every .pm file in /lib
-my $path = '/home/rpillar/123reg/new/OTTCatalyst/lib/';
+my $path = '/Users/richardpillar/perl/Stylus-C/Stylus/lib';
 my $dir = path($path);
 my $iter = $dir->iterator({
     recurse         => 1,

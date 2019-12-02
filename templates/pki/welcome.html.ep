@@ -26,8 +26,8 @@
 
 <section class="section" style="padding-top:1 rem; padding-bottom: 1rem;">
   <div class="container">
-    <div class="columns">
-      <div class="column is-four-fifths style="margin: 0px 50px;">
+    <div>
+      <div>
         <table id="module-list" class="table is-striped is-fullwidth is-bordered is-hoverable">
           <thead style="background-color: #cf09ef00;">
             <tr>

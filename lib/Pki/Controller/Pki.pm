@@ -38,7 +38,7 @@ sub pod {
 
   my $module = $self->param('module');
 
-  my $path = Pod::Simple::Search->new->inc(0)->find($module, ("/home/rpillar/123reg/new/OTTCatalyst/lib"));
+  my $path = Pod::Simple::Search->new->inc(0)->find($module, ("/Users/richardpillar/perl/Stylus-C/Stylus/lib"));
 
   return $self->res->code(301) && $self->redirect_to("https://metacpan.org/pod/$module") unless $path && -r $path;
 
