@@ -36,6 +36,7 @@ while (my $path = $iter->()) {
     
     _collect_metrics_data( $module, $file );
     _collect_critic_data( $module, $file );
+    _collect_use_data( $module, $file );
 }
 
 sub _critic {
@@ -88,6 +89,12 @@ sub _collect_metrics_data {
     $query = "insert into summary (module, max_complexity, lines, pod) values(?, ?, ?, ?)";
     $stmt  = $dbh->prepare( $query );
     $stmt->execute( $module, $summary->{ sub_complexity }->{ max }, $lines, 0 );
+
+    return;
+}
+
+sub _collect_use_data {
+    my ( $module, $file ) = @_;
 
     return;
 }

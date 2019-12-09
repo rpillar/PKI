@@ -1,7 +1,7 @@
 % layout 'default';
 % title 'Perl Critic Viewer';
 
-<section class="hero is-primary" style="margin-top:40px;">
+<section class="hero is-dark is-bold" style="margin-top:40px;">
   <div class="hero-body" style="padding-bottom:1rem;">
     <div class="container">
       <h2>
@@ -36,5 +36,5 @@
 </section>
 
 <script>
-    $('#critic-list').DataTable();
+    $('#critic-list').DataTable({ "searching": false, "lengthChange": false});
 </script>

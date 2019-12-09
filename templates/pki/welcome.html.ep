@@ -13,7 +13,7 @@
   }
 </style>
 
-<section class="hero is-primary" style="margin-top:40px;">
+<section class="hero is-dark is-bold" style="margin-top:40px;">
   <div class="hero-body" style="padding-bottom:1rem;">
     <div class="container">
       <h2>
