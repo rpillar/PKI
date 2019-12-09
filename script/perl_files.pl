@@ -8,7 +8,6 @@ use DBI;
 use Path::Tiny;
 use Perl::Critic;
 use Perl::Metrics::Simple;
-use Pod::Coverage;
 
 my $dbh = DBI->connect("dbi:SQLite:critic.db","","") or die "Could not connect";
 
@@ -46,8 +45,9 @@ sub _critic {
 
     my $critic = Perl::Critic->new( -theme => "maintenance" ); 
     my @issues = $critic->critique($file->stringify); 
+
     foreach ( @issues ) { 
-        push @critic_data, $_->description; 
+        push @critic_data, [ $_->description, $_->line_number ]; 
     }
     
     return \@critic_data;
@@ -58,11 +58,11 @@ sub _collect_critic_data {
 
     my $critic_data = _critic( $file );
 
-    my $query = "insert into critic (module, critic) values(?, ?)";
+    my $query = "insert into critic (module, critic, line_number) values(?, ?, ?)";
     my $stmt  = $dbh->prepare( $query );
 
     foreach ( @{$critic_data} ) {
-        $stmt->execute( $module, $_ );
+        $stmt->execute( $module, $_->[0], $_->[1] );
     }
 
     return;
@@ -71,10 +71,6 @@ sub _collect_critic_data {
 sub _collect_metrics_data {
     my ( $module, $file ) = @_;
 
-    my $pc = Pod::Coverage->new( package => $module );
-    my $coverage = $pc->coverage;
-print('POD coverage for - ' . $module . "\n");
-p $coverage;
     my @file_array = ( $file->stringify );
     my $analysis = $analyzer->analyze_files( @file_array );
 
@@ -91,7 +87,7 @@ p $coverage;
     my $lines   = $analysis->lines;
     $query = "insert into summary (module, max_complexity, lines, pod) values(?, ?, ?, ?)";
     $stmt  = $dbh->prepare( $query );
-    $stmt->execute( $module, $summary->{ sub_complexity }->{ max }, $lines, $coverage ? $coverage * 10  : 0 );
+    $stmt->execute( $module, $summary->{ sub_complexity }->{ max }, $lines, 0 );
 
     return;
 }

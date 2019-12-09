@@ -24,6 +24,18 @@
           content: "";
           display: block;
       }
+      .navbar {
+        /*background-color: rgb(34, 34, 34); */
+      }
+      .navbar-item {
+        letter-spacing:2px; 
+        text-transform:uppercase;
+        font-size:22px;
+        font-family:Raleway;
+        font-weight:500;
+        color:#3bc492;
+      }
+      .navbar-item:hover {}
       h1 {
           font-size: 3rem;
       }
@@ -42,7 +54,7 @@
           bottom:0;
           width:100%;
           text-align: center;
-          background-color: rgb(34, 34, 34);;
+          background-color: rgb(34, 34, 34);
           padding-top: 5px;
           z-index: 999;
       }
@@ -50,11 +62,11 @@
   </head>
   <body>
     <div class="page-wrap">
-      <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+      <nav class="navbar is-fixed-top is-dark" role="navigation" aria-label="main navigation">
         <div class="container">
           <div class="navbar-brand">
             <a class="navbar-item" href="">
-              <span style="font-size:2rem;color:#00897b"><i class="material-icons" style="color: blue;">invert_colors</i></span>
+              <span style="font-size:2rem;color:#00897b"><i class="material-icons">invert_colors</i></span>
             </a>
           </div>
 
@@ -67,18 +79,16 @@
           </div>
         </div>
       </nav>
-      <div class="container">
+      <!--<div class="container">-->
         <%= content %>
-      </div>
+      <!--</div>-->
     </div>
 
     <div id="footer" style="border-bottom:5px solid gray; margin-top:30px;">
       <div class="container">
         <div class="row" style="margin-top:15px;">
           <a href="www.developontheweb.co.uk" style="letter-spacing:2px; text-transform:uppercase;font-size:28px;font-family:Raleway;font-weight:500;color:#3bc492;padding-top:15px;">
-            <span style="padding-bottom:2px; border-bottom:2px solid black;">developonth
-              <span style="font-weight:700;"><em>web</em></span>
-            </span>
+            <span style="padding-bottom:2px; border-bottom:2px solid black;">developonthe<span style="font-weight:700;"><em>web</em></span></span>
           </a>
         </div>
       </div>

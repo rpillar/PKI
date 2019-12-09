@@ -10,8 +10,8 @@
                 border-bottom:5px solid gray;
             }
             .sidenav li>a {
-                height: 24px;
-                line-height: 28px;
+                height: auto;
+                line-height: 2;
                 color: rgba(255,255,255,0.5);;
             }
             .divider {
@@ -76,7 +76,7 @@
 	        margin-top: 2em;
 	    }
         </style>
-<p><%== $pod %></p>
+<div class="container"><%== $pod %></div>
 
 <script>
   var scroll = new SmoothScroll('a[href*="#"]', {

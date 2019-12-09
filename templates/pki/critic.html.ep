@@ -1,0 +1,40 @@
+% layout 'default';
+% title 'Perl Critic Viewer';
+
+<section class="hero is-primary" style="margin-top:40px;">
+  <div class="hero-body" style="padding-bottom:1rem;">
+    <div class="container">
+      <h2>
+        Perl Critic / Info.
+      </h2>
+    </div>
+  </div>
+  <hr />
+</section>
+
+<section class="section">
+    <div class="container">
+      <div>
+        <table id="critic-list" class="table is-striped is-fullwidth is-bordered is-hoverable">
+          <thead style="background-color: #cf09ef00;">
+            <tr>
+              <th width="15%">Line Number</th>
+              <th width="85%">Critic</th>
+            </tr>
+          </thead>
+          <tbody>
+            % foreach my $critic (@$critics) {
+                <tr>
+                  <td><%= $critic->{line_number} %></td>
+                  <td><%= $critic->{critic} %></td>
+                </tr>
+            % }
+          </tbody
+        </table>
+      </div>
+    </div>
+</section>
+
+<script>
+    $('#critic-list').DataTable();
+</script>

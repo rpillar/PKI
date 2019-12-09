@@ -18,8 +18,9 @@ sub startup {
 
   # routes
   $r->get('/')->to(controller => 'pki', action => 'welcome');
+  $r->get('/summary')->to(controller => 'pki', action => 'summary');
   $r->get('/:module')->to(controller => 'pki', action => 'pod');
-  $r->get('/info/:module')->to(controller => 'pki', action => 'info');
+  $r->get('/critic/:module')->to(controller => 'pki', action => 'critic');
 }
 
 1;

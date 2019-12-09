@@ -12,9 +12,26 @@ my $dbh = DBI->connect("dbi:SQLite:critic.db","","") or die "Could not connect";
 sub welcome {
   my $self = shift;
 
-  # Render template "pki/welcome.html.ep" with message
-  my $modules = $self->_modules();
-  $self->render(template => 'pki/welcome', modules => $modules);
+  # Render template "pki/welcome.html.ep"
+  $self->render(template => 'pki/welcome');
+}
+
+sub critic {
+  my ( $self ) = @_;
+
+  my $module = $self->param('module');
+  $self->app->log->debug($module);
+  my @critics;
+
+  my $critic_query = "select module, critic, line_number from critic where module = ?";
+  my $critic_stmt  = $dbh->prepare( $critic_query );
+  $critic_stmt->execute( $module );
+  while ( my ( $module, $critic, $line_number ) = $critic_stmt->fetchrow_array ) {
+    push @critics, { line_number => $line_number, critic => $critic };
+  }
+
+  # Render template "pki/critic.html.ep"
+  $self->render(template => 'pki/critic', critics => \@critics);
 }
 
 sub dashboard {
@@ -22,15 +39,6 @@ sub dashboard {
 
   # Render template "pki/dashboard.html.ep" with message
   $self->render();
-}
-
-sub info {
-  my ( $self ) = @_;
-
-  my $module = $self->param('module');
-
-  # Render template "pki/info.html.ep"
-  $self->render(template => 'pki/info' );
 }
 
 sub pod {
@@ -62,7 +70,7 @@ sub pod {
   $self->render(template => 'pki/pod', pod => $output );
 }
 
-sub _modules {
+sub summary {
   my $self = shift;
 
   my @modules;
@@ -81,11 +89,14 @@ sub _modules {
       complexity => $summary_data->{max_complexity} ? $summary_data->{max_complexity} : 0,
       pod        => '/' . $module,
       pod_score  => $summary_data->{pod},
-      hierarchy  => "N"
+      hierarchy  => "N",
+      critic     => 'critic/' . $module,
     } 
   }
 
-  return \@modules;
+  my $table_data = { data => \@modules };
+
+  $self->render(json => $table_data);
 }
 
 1;

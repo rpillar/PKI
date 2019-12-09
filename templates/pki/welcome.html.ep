@@ -13,48 +13,35 @@
   }
 </style>
 
-<section class="hero" style="margin-top:80px;margin-bottom:50px;>
-  <div class="hero-body">
+<section class="hero is-primary" style="margin-top:40px;">
+  <div class="hero-body" style="padding-bottom:1rem;">
     <div class="container">
       <h2>
-        Browse documentation / view a module's hierarchy / check the quality of the code.
+        Browse POD / check the quality of your code.
       </h2>
     </div>
   </div>
   <hr />
 </section>
 
-<section class="section" style="padding-top:1 rem; padding-bottom: 1rem;">
-  <div class="container">
-    <div>
+<section class="section" style="padding-bottom: 1rem;">
+    <div class="container">
       <div>
-        <table id="module-list" class="table is-striped is-fullwidth is-bordered is-hoverable">
+        <table id="module-list" class="table is-striped is-fullwidth is-hoverable">
           <thead style="background-color: #cf09ef00;">
             <tr>
               <th width="60%">Module</th>
               <th width="10%">Compiles</th>
               <th width="10%">Complexity</th>
               <th width="10%">Pod</th>
+              <th width="10%">Critic / Info</th>
             </tr>
           </thead>
           <tbody>
-            % foreach my $module (@$modules) {
-                <tr>
-                  <td><%= $module->{module} %></td>
-                  <td style="text-align:center;"><%= $module->{compiles} %></td>
-                  % if ( $module->{complexity} > 10 ) {
-                    <td style="text-align:center;background-color:#ffccbc;"><%= $module->{complexity} %></td>
-                  % } else {
-                    <td style="text-align:center;"><%= $module->{complexity} %></td>
-                  % }
-                     <td style="text-align:center;"><a href="<%= $module->{pod} %>"><i class="material-icons"">link</i></a></td>
-                </tr>
-            % }
           </tbody
         </table>
       </div>
     </div>
-  </div>
 </section>
 
 <script>
@@ -66,8 +53,31 @@
       console.log('module : ' + module);
       window.location.replace('/' + module);
     });
+
+    $('#module-list').DataTable({
+        "ajax": 
+        { 
+          "type": "GET",
+          "url": "/summary"
+        },
+        "columns": [
+          { "data": "module" },
+          { "data": "compiles" },
+          { "data": "complexity" },
+          { "data": "pod", "name": "pod",
+            fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
+              $(nTd).html("<a href='"+oData.pod+"'>"+oData.pod+"</a>");
+            }
+          },
+          { "data": "critic", "name": "critic",
+            fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
+              $(nTd).html("<a href='"+oData.critic+"'>"+oData.pod+"</a>");
+            }
+          }
+        ]
+      }
+    );
   });
 </script>
 <script type="text/javascript">
-    $('#module-list').DataTable();
 </script>
