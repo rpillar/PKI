@@ -30,11 +30,10 @@
         <table id="module-list" class="table is-striped is-fullwidth is-hoverable">
           <thead style="background-color: #cf09ef00;">
             <tr>
-              <th width="60%">Module</th>
-              <th width="10%">Compiles</th>
+              <th width="65%">Module</th>
               <th width="10%">Complexity</th>
               <th width="10%">Pod</th>
-              <th width="10%">Critic / Info</th>
+              <th width="15%">Critic / Info</th>
             </tr>
           </thead>
           <tbody>
@@ -62,16 +61,15 @@
         },
         "columns": [
           { "data": "module" },
-          { "data": "compiles" },
           { "data": "complexity" },
           { "data": "pod", "name": "pod",
             fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
-              $(nTd).html("<a href='"+oData.pod+"'>"+oData.pod+"</a>");
+              $(nTd).html("<a href='"+oData.pod+"'><i class='small material-icons' style='color:#009688;'>book</i></a>");
             }
           },
           { "data": "critic", "name": "critic",
             fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
-              $(nTd).html("<a href='"+oData.critic+"'>"+oData.pod+"</a>");
+              $(nTd).html("<a href='"+oData.critic+"'><i class='small material-icons' style='color:#ff1744;'>call_to_action</i></a>");
             }
           }
         ]
