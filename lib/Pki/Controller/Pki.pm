@@ -31,7 +31,7 @@ sub critic {
   }
 
   # Render template "pki/critic.html.ep"
-  $self->render(template => 'pki/critic', critics => \@critics);
+  $self->render(template => 'pki/critic', module => $module, critics => \@critics);
 }
 
 sub dashboard {

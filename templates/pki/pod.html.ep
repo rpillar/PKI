@@ -4,6 +4,9 @@
             body {
                 padding-top:70px;
             }
+			h2 {
+				font-size: 3rem;
+			}
             .sidenav {
                 background-color: #222222;
                 color: rgba(255,255,255,0.5);

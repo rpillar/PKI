@@ -15,6 +15,9 @@
 <section class="section">
     <div class="container">
       <div>
+        <h2><%= $module %></h2>
+      </div>
+      <div>
         <table id="critic-list" class="table is-striped is-fullwidth is-bordered is-hoverable">
           <thead style="background-color: #cf09ef00;">
             <tr>
@@ -36,5 +39,5 @@
 </section>
 
 <script>
-    $('#critic-list').DataTable({ "searching": false, "lengthChange": false});
+    $('#critic-list').DataTable({ "searching": false, "lengthChange": false, pageLength: 15});
 </script>
