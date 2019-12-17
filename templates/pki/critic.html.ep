@@ -18,6 +18,15 @@
         <h2><%= $module %></h2>
       </div>
       <div>
+        <h4>Dependencies</h4>
+        <ul class="collection">
+          % foreach my $dependency (@$dependencies) {
+            <li class="collection-item"><a href="/<%= $dependency %>"><%= $dependency %></a></li>
+          % }
+        </ul>
+      </div>
+      <div>
+        <h4>Perl Critic</h4>
         <table id="critic-list" class="table is-striped is-fullwidth is-bordered is-hoverable">
           <thead style="background-color: #cf09ef00;">
             <tr>

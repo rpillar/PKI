@@ -2,6 +2,8 @@ package Pki::Controller::Pki;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Config;
+use Data::Printer;
+use JSON;
 use Pod::Simple::Search;
 use MetaCPAN::Pod::XHTML;
 
@@ -21,7 +23,7 @@ sub critic {
 
   my $module = $self->param('module');
   $self->app->log->debug($module);
-  my @critics;
+  my ( @critics, @dependencies );
 
   my $critic_query = "select module, critic, line_number from critic where module = ?";
   my $critic_stmt  = $dbh->prepare( $critic_query );
@@ -30,8 +32,16 @@ sub critic {
     push @critics, { line_number => $line_number, critic => $critic };
   }
 
+  my $dependency_query = "select module, dependencies from dependencies where module = ?";
+  my $dependency_stmt  = $dbh->prepare( $dependency_query );
+  $dependency_stmt->execute( $module );
+  my ( $module_name, $dependency_jsondata ) = $dependency_stmt->fetchrow_array;
+  my $dependency_data                       = decode_json( $dependency_jsondata );
+
+  push @dependencies, { dependency => $dependency_data };
+
   # Render template "pki/critic.html.ep"
-  $self->render(template => 'pki/critic', module => $module, critics => \@critics);
+  $self->render(template => 'pki/critic', module => $module, critics => \@critics, dependencies => $dependency_data );
 }
 
 sub dashboard {
