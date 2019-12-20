@@ -32,16 +32,29 @@ sub critic {
     push @critics, { line_number => $line_number, critic => $critic };
   }
 
+  # get dependency data
   my $dependency_query = "select module, dependencies from dependencies where module = ?";
   my $dependency_stmt  = $dbh->prepare( $dependency_query );
   $dependency_stmt->execute( $module );
   my ( $module_name, $dependency_jsondata ) = $dependency_stmt->fetchrow_array;
   my $dependency_data                       = decode_json( $dependency_jsondata );
-
   push @dependencies, { dependency => $dependency_data };
 
+  # get inheritance data
+  my $inheritance_query = "select module, inheritance from inheritance where module = ?";
+  my $inheritance_stmt  = $dbh->prepare( $inheritance_query );
+  $inheritance_stmt->execute( $module );
+  my ( $inheritance_module, $inheritance_jsondata ) = $inheritance_stmt->fetchrow_array;
+  my $inheritance_data                              = decode_json( $inheritance_jsondata );
+
   # Render template "pki/critic.html.ep"
-  $self->render(template => 'pki/critic', module => $module, critics => \@critics, dependencies => $dependency_data );
+  $self->render(
+    template => 'pki/critic', 
+    module => $module, 
+    critics => \@critics, 
+    dependencies => $dependency_data, 
+    inheritance => $inheritance_data
+  );
 }
 
 sub dashboard {
@@ -84,23 +97,21 @@ sub summary {
   my $self = shift;
 
   my @modules;
-  my $critic_query = "select distinct(module) from critic";
-  my $critic_stmt  = $dbh->prepare( $critic_query );
-  my $summary_query = "select * from summary where module = ?";
+  my $summary_query = "select * from summary";
   my $summary_stmt = $dbh->prepare( $summary_query );
 
-  $critic_stmt->execute;
-  while ( my $module = $critic_stmt->fetchrow_array ) {
-    $summary_stmt->execute( $module );
-    my $summary_data = $summary_stmt->fetchrow_hashref;
+  $summary_stmt->execute;
+  while ( my $summary_data = $summary_stmt->fetchrow_hashref ) {
+    #$summary_stmt->execute( $module );
+    #my $summary_data = $summary_stmt->fetchrow_hashref;
     push @modules, { 
-      module     => $module,
+      module     => $summary_data->{ module },
       compiles   => "Y",
       complexity => $summary_data->{max_complexity} ? $summary_data->{max_complexity} : 0,
-      pod        => '/' . $module,
+      pod        => '/' . $summary_data->{ module },
       pod_score  => $summary_data->{pod},
       hierarchy  => "N",
-      critic     => 'critic/' . $module,
+      critic     => 'critic/' . $summary_data->{ module },
     } 
   }
 

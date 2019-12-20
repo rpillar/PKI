@@ -9,6 +9,7 @@ use JSON;
 use Path::Tiny;
 use Perl::Critic;
 use Perl::Metrics::Simple;
+use Safe;
 
 my $dbh = DBI->connect("dbi:SQLite:critic.db","","") or die "Could not connect";
 
@@ -41,30 +42,21 @@ while (my $path = $iter->()) {
 
 }
 
-sub _critic {
-    my $file = shift;
+sub _collect_critic_data {
+    my ( $module, $file ) = @_;
 
     my @critic_data = ();
-
     my $critic = Perl::Critic->new( -theme => "maintenance" ); 
     my @issues = $critic->critique($file->stringify); 
 
     foreach ( @issues ) { 
         push @critic_data, [ $_->description, $_->line_number ]; 
     }
-    
-    return \@critic_data;
-}
-
-sub _collect_critic_data {
-    my ( $module, $file ) = @_;
-
-    my $critic_data = _critic( $file );
 
     my $query = "insert into critic (module, critic, line_number) values(?, ?, ?)";
     my $stmt  = $dbh->prepare( $query );
 
-    foreach ( @{$critic_data} ) {
+    foreach ( @critic_data ) {
         $stmt->execute( $module, $_->[0], $_->[1] );
     }
 
@@ -95,29 +87,9 @@ sub _collect_metrics_data {
     return;
 }
 
-sub _initialize {
-    my $query = "delete from critic";
-    my $stmt  = $dbh->prepare( $query );
-    $stmt->execute();
-
-    $query = "delete from metrics";
-    $stmt  = $dbh->prepare( $query );
-    $stmt->execute();
-
-    $query = "delete from summary";
-    $stmt  = $dbh->prepare( $query );
-    $stmt->execute();
-
-    $query = "delete from dependencies";
-    $stmt  = $dbh->prepare( $query );
-    $stmt->execute();
-
-    return;
-}
-
 sub _collect_use_data {
     my ( $module, $file ) = @_;
-    
+  
     # go through the file and try to find out some things
     open my $fh, '<', $file or do { warn("Can't open file $file for read: $!"); return undef; };
 
@@ -160,44 +132,42 @@ sub _collect_use_data {
 
         _parse_dependencies( $file_data, $_ );
 
-        #$self->parse_inheritance($_, $fh);
+        _parse_inheritance( $file_data, $_, $fh );
     }
     close $fh;
 
     my $dependencies = $file_data->{data}->{$module}->{depends_on};
-    p $dependencies;
+    my $inheritance  = $file_data->{data}->{$module}->{parent};
 
-    p $file_data->{data};
     my $query = "insert into dependencies (module, dependencies) values(?, ?)";
     my $stmt  = $dbh->prepare( $query );
     $stmt->execute( $module, encode_json($dependencies) );
 
+    $query = "insert into inheritance (module, inheritance) values(?, ?)";
+    $stmt  = $dbh->prepare( $query );
+    $stmt->execute( $module, encode_json($inheritance) );
+
     return $file_data->{'data'};
 }
 
-sub _parse_package {
-    my ($file_data, $line) = @_;
+sub _initialize {
+    my $query = "delete from critic";
+    my $stmt  = $dbh->prepare( $query );
+    $stmt->execute();
 
-    # get the package name
-    if ($line =~ m/^\s*package\s+([\w\:]+)\s*;/) {
-        my $curr_pkg = $1;
-        $file_data->{'curr_pkg'} = $curr_pkg;
-        $file_data->{'data'}->{$curr_pkg} = {
-            'filename'         => $file_data->{'filename'},
-            'filerootdir'      => $file_data->{'rootdir'},
-            'package'          => $curr_pkg,
-            'line_count'       => 0,
-            'depends_on'       => [],
-            'parent'           => [],
-            'methods'          => [],
-            'methods_super'    => [],
-            'methods_used'     => {},
-            'constants'        => {},
-            'fields'           => [],
-        };
-    }
+    $query = "delete from metrics";
+    $stmt  = $dbh->prepare( $query );
+    $stmt->execute();
 
-    return $file_data;
+    $query = "delete from summary";
+    $stmt  = $dbh->prepare( $query );
+    $stmt->execute();
+
+    $query = "delete from dependencies";
+    $stmt  = $dbh->prepare( $query );
+    $stmt->execute();
+
+    return;
 }
 
 sub _parse_dependencies {
@@ -239,8 +209,57 @@ sub _parse_dependencies {
     return $file_data;
 }
 
+sub _parse_inheritance {
+    my ($file_data, $line, $fh) = @_;
+   
+    # the 'base/parent/extends' pragma
+    if ($line =~ m/^\s*use\s+(base|parent|extends)\s+(.*)/) {
+        ( my $list = $2 ) =~ s/\s+\#.*//;
+        $list =~ s/[\r\n]//;
+        while ( $list !~ /;\s*$/ && ( $_ = <$fh> ) ) {
+            s/\s+#.*//;
+            s/[\r\n]//;
+            $list .= $_;
+        }
+        $list =~ s/;\s*$//;
+        my (@mods) = Safe->new()->reval($list);
+        warn "Unable to eval $line at line $. in $file_data->{file}: $@\n" if $@;
+        foreach my $mod (@mods) {
+            $file_data = _util_dpush($file_data, 'parent', $mod);
+        }
+    }
+
+    return $file_data;
+}
+
+sub _parse_package {
+    my ($file_data, $line) = @_;
+
+    # get the package name
+    if ($line =~ m/^\s*package\s+([\w\:]+)\s*;/) {
+        my $curr_pkg = $1;
+        $file_data->{'curr_pkg'} = $curr_pkg;
+        $file_data->{'data'}->{$curr_pkg} = {
+            'filename'         => $file_data->{'filename'},
+            'filerootdir'      => $file_data->{'rootdir'},
+            'package'          => $curr_pkg,
+            'line_count'       => 0,
+            'depends_on'       => [],
+            'parent'           => [],
+            'methods'          => [],
+            'methods_super'    => [],
+            'methods_used'     => {},
+            'constants'        => {},
+            'fields'           => [],
+        };
+    }
+
+    return $file_data;
+}
+
 sub _util_dpush {
     my ($file_data, $key, $value) = @_;
+
     my $curr_pkg = $file_data->{'curr_pkg'};
     push @{ $file_data->{'data'}->{$curr_pkg}->{$key} }, $value
         unless $file_data->{'seen'}->{$curr_pkg}->{$key}->{$value}++;

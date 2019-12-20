@@ -17,6 +17,16 @@
       <div>
         <h2><%= $module %></h2>
       </div>
+      % if (@$inheritance) {
+        <div>
+          <h4>Inheritance</h4>
+          <ul class="collection">
+            % foreach my $inheritance (@$inheritance) {
+              <li class="collection-item"><a href="/<%= $inheritance %>"><%= $inheritance %></a></li>
+            % }
+          </ul>
+        </div>
+      % }
       <div>
         <h4>Dependencies</h4>
         <ul class="collection">
