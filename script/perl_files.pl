@@ -243,11 +243,13 @@ sub _parse_inheritance {
         }
     }
 
-    if ($line =~ m/BEGIN\s+\{\s+extends\s+\'([\w\:]+)\s*\}*/ ) {
+    if ($line =~ m/BEGIN\s+\{*\s*extends\s+'*([\w\:]+)'*\s*\}*/ ) {
+        p $line;
         ( my $list = $1 ) =~ s/\s+\#.*//;
         $list =~ s/[\r\n]//;
         my (@mods) = Safe->new()->reval($list);
         foreach my $mod (@mods) {
+            p $mod;
             $file_data = _util_dpush($file_data, 'parent', $mod);
         }
     }
