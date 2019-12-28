@@ -167,6 +167,10 @@ sub _initialize {
     $stmt  = $dbh->prepare( $query );
     $stmt->execute();
 
+    $query = "delete from inheritance";
+    $stmt  = $dbh->prepare( $query );
+    $stmt->execute();
+
     return;
 }
 
@@ -212,18 +216,27 @@ sub _parse_dependencies {
 sub _parse_inheritance {
     my ($file_data, $line, $fh) = @_;
    
-    # the 'base/parent/extends' pragma
-    if ($line =~ m/^\s*use\s+(base|parent|extends)\s+(.*)/) {
+    # the 'use base/parent' pragma
+    if ($line =~ m/^\s*use\s+(base|parent)\s+(.*)/) {
         ( my $list = $2 ) =~ s/\s+\#.*//;
         $list =~ s/[\r\n]//;
         while ( $list !~ /;\s*$/ && ( $_ = <$fh> ) ) {
-            s/\s+#.*//;
-            s/[\r\n]//;
+            s/\s+#.*//; # remove any comments
+            s/[\r\n]//; # remove line endings
             $list .= $_;
         }
         $list =~ s/;\s*$//;
         my (@mods) = Safe->new()->reval($list);
         warn "Unable to eval $line at line $. in $file_data->{file}: $@\n" if $@;
+        foreach my $mod (@mods) {
+            $file_data = _util_dpush($file_data, 'parent', $mod);
+        }
+    }
+
+    if ($line =~ m/^extends\s+(.*)/ ) {
+        ( my $list = $1 ) =~ s/\s+\#.*//;
+        $list =~ s/[\r\n]//;
+        my (@mods) = Safe->new()->reval($list);
         foreach my $mod (@mods) {
             $file_data = _util_dpush($file_data, 'parent', $mod);
         }
