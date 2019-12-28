@@ -233,7 +233,17 @@ sub _parse_inheritance {
         }
     }
 
+    # there will be a way to make this better - but ....
     if ($line =~ m/^extends\s+(.*)/ ) {
+        ( my $list = $1 ) =~ s/\s+\#.*//;
+        $list =~ s/[\r\n]//;
+        my (@mods) = Safe->new()->reval($list);
+        foreach my $mod (@mods) {
+            $file_data = _util_dpush($file_data, 'parent', $mod);
+        }
+    }
+
+    if ($line =~ m/^BEGIN\s+\{\s+extends\s+(.*)/ ) {
         ( my $list = $1 ) =~ s/\s+\#.*//;
         $list =~ s/[\r\n]//;
         my (@mods) = Safe->new()->reval($list);
