@@ -25,12 +25,12 @@
           display: block;
       }
       .navbar {
-        /*background-color: rgb(34, 34, 34); */
+        background-color: rgb(34, 34, 34); 
       }
       .navbar-item {
         letter-spacing:2px; 
         text-transform:uppercase;
-        font-size:22px;
+        font-size:24px;
         font-family:Raleway;
         font-weight:500;
         color:#3bc492;
@@ -74,7 +74,7 @@
           <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
               <a class="navbar-item is-size-5" href="/">
-                <span style="border-bottom:3px solid lightblue;">PerlKwaliteeInfo</span>
+                <span style="border-bottom:3px solid lightblue;">PKI</span>
               </a>
             </div>
           </div>

@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use Config::JSON;
 use DDP;
 use DBI;
 use JSON;
@@ -16,30 +17,32 @@ my $dbh = DBI->connect("dbi:SQLite:critic.db","","") or die "Could not connect";
 # initialize the environment
 _initialize();
 
-# try to import every .pm file in /lib
-my $path = '/Users/richardpillar/perl/Stylus-C/Stylus/lib';
-my $dir = path($path);
-my $iter = $dir->iterator({
-    recurse         => 1,
-    follow_symlinks => 0,
-});
-
 my $analyzer = Perl::Metrics::Simple->new;
+my $libs;
 
-_initialize();
+# try to import every .pm file in /lib
+my $config = Config::JSON->new("./script/filelib.conf");
 
-while (my $path = $iter->()) {
-    next if $path->is_dir || $path !~ /\.pm$/;
-    my $file = $path->relative;
+foreach ( @{ $config->get('libs') } ) {
+    my $path = $_;
+    my $dir = path($path);
+    my $iter = $dir->iterator({
+        recurse         => 1,
+        follow_symlinks => 0,
+    });
 
-    my $module;
-    ( $module = $file ) =~ s/(^.+\/lib\/|\.pm$)//g;
-    $module =~ s/\//::/g;
+    while (my $path = $iter->()) {
+        next if $path->is_dir || $path !~ /\.pm$/;
+        my $file = $path->relative;
+
+        my $module;
+        ( $module = $file ) =~ s/(^.+\/lib\/|\.pm$)//g;
+        $module =~ s/\//::/g;
     
-    _collect_metrics_data( $module, $file );
-    _collect_critic_data( $module, $file );
-    _collect_use_data( $module, $file );
-
+        _collect_metrics_data( $module, $file );
+        _collect_critic_data( $module, $file );
+        _collect_use_data( $module, $file );
+    }
 }
 
 sub _collect_critic_data {

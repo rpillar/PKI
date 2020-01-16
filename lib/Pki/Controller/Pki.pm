@@ -1,7 +1,7 @@
 package Pki::Controller::Pki;
 use Mojo::Base 'Mojolicious::Controller';
 
-use Config;
+use Config::JSON;
 use Data::Printer;
 use JSON;
 use Pod::Simple::Search;
@@ -67,9 +67,11 @@ sub dashboard {
 sub pod {
   my ( $self ) = @_;
 
-  my $module = $self->param('module');
+  my $config = Config::JSON->new("./script/filelib.conf");
 
-  my $path = Pod::Simple::Search->new->inc(0)->find($module, ("/Users/richardpillar/perl/Stylus-C/Stylus/lib"));
+  my $module = $self->param('module');
+  #my @lib_dirs; = ("/Users/richardpillar/perl/Stylus-C/Stylus/lib");
+  my $path = Pod::Simple::Search->new->inc(0)->find( $module, @{ $config->get('libs') } );
 
   return $self->res->code(301) && $self->redirect_to("https://metacpan.org/pod/$module") unless $path && -r $path;
 

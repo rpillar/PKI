@@ -8,7 +8,7 @@
 				font-size: 3rem;
 			}
             .sidenav {
-                background-color: #222222;
+                background-color: rgba(34,34,34);
                 color: rgba(255,255,255,0.5);
                 border-bottom:5px solid gray;
             }
