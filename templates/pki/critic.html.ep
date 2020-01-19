@@ -1,25 +1,61 @@
 % layout 'default';
 % title 'Perl Critic Viewer';
 
-<section class="hero is-dark is-bold" style="margin-top:40px;">
-  <div class="hero-body" style="padding-bottom:1rem;">
+<style>
+  table tr {
+    line-height: 1.25;
+  }
+  table tr th {
+    font-size: 1.3em;
+    cursor: pointer;
+    outline: none;
+  }
+  td {
+    font-size: 1.2rem;
+    padding:10px 5px;
+    font-weight: 600;
+  }
+  .dataTables_info {
+    margin-bottom: 10px;
+  }
+  #critic-list_paginate a.paginate_button {
+    text-decoration: none;
+    background-color: #26a69a;
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    height: 36px;
+    line-height: 36px;
+    padding: 10px 12px;
+    text-transform: uppercase;
+    margin: 10px 5px;
+    cursor: pointer;
+  }
+  .collection-item{
+    font-size: 1.1rem;
+    padding:10px 5px;
+    font-weight: 600;
+  }
+</style>
+
+<section>
+  <div style="padding-bottom:1rem;background-color:#363636">
     <div class="container">
-      <h2>
+      <h2 style="color:#fff;margin:0 0;padding:20px 20px;">
         Perl Critic / Info.
       </h2>
     </div>
   </div>
-  <hr />
 </section>
 
 <section class="section">
     <div class="container">
       <div>
-        <h2><%= $module %></h2>
+        <h2><span style="border-bottom:4px solid lightblue;"><%= $module %></span></h2>
       </div>
       % if (@$inheritance) {
         <div>
-          <h4>Inheritance</h4>
+          <h4><span style="border-bottom:2px solid lightblue;">Inheritance</span></h4>
           <ul class="collection">
             % foreach my $inheritance (@$inheritance) {
               <li class="collection-item"><a href="/<%= $inheritance %>"><%= $inheritance %></a></li>
@@ -28,7 +64,7 @@
         </div>
       % }
       <div>
-        <h4>Dependencies</h4>
+        <h4><span style="border-bottom:3px solid lightblue;">Dependencies</span></h4>
         <ul class="collection">
           % foreach my $dependency (@$dependencies) {
             <li class="collection-item"><a href="/<%= $dependency %>"><%= $dependency %></a></li>
@@ -36,12 +72,12 @@
         </ul>
       </div>
       <div>
-        <h4>Perl Critic</h4>
-        <table id="critic-list" class="table is-striped is-fullwidth is-bordered is-hoverable">
+        <h4><span style="border-bottom:3px solid lightblue;">Perl Critic</span></h4>
+        <table id="critic-list" class="striped">
           <thead style="background-color: #cf09ef00;">
             <tr>
-              <th width="15%">Line Number</th>
-              <th width="85%">Critic</th>
+              <th width="15%"><span style="border-bottom: 3px solid lightblue;">Line Number</span></th>
+              <th width="85%"><span style="border-bottom: 3px solid lightblue;">Critic</span></th>
             </tr>
           </thead>
           <tbody>
@@ -58,5 +94,5 @@
 </section>
 
 <script>
-    $('#critic-list').DataTable({ "searching": false, "lengthChange": false, pageLength: 15});
+    $('#critic-list').DataTable({ "searching": false, "lengthChange": false, pageLength: 10});
 </script>

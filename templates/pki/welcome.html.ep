@@ -2,8 +2,40 @@
 % title 'Welcome';
 
 <style>
+  table tr {
+    line-height: 1.25;
+  }
+  table tr th {
+    font-size: 1.3em;
+    cursor: pointer;
+    outline: none;
+  }
   td {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    padding:10px 5px;
+    font-weight: 600;
+  }
+  .dataTables_length {
+    display: none;
+  }
+  .dataTables_filter label {
+    font-weight: 600;
+  }
+  .dataTables_info {
+    margin-bottom: 10px;
+  }
+  #module-list_paginate a.paginate_button {
+    text-decoration: none;
+    background-color: #26a69a;
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    height: 36px;
+    line-height: 36px;
+    padding: 10px 12px;
+    text-transform: uppercase;
+    margin: 10px 5px;
+    cursor: pointer;
   }
   .show-data {
     display:table-row;
@@ -13,27 +45,26 @@
   }
 </style>
 
-<section class="hero is-dark is-bold" style="margin-top:40px;">
-  <div class="hero-body" style="padding-bottom:1rem;">
+<section>
+  <div style="padding-bottom:1rem;background-color:#363636">
     <div class="container">
-      <h2>
+      <h2 style="color:#fff;margin:0 0;padding:20px 20px;">
         Browse POD / check the quality of your code.
       </h2>
     </div>
   </div>
-  <hr />
 </section>
 
 <section class="section" style="padding-bottom: 1rem;">
     <div class="container">
       <div>
-        <table id="module-list" class="table is-striped is-fullwidth is-hoverable">
+        <table id="module-list" class="striped row-border">
           <thead style="background-color: #cf09ef00;">
             <tr>
-              <th width="65%">Module</th>
-              <th width="10%">Complexity</th>
-              <th width="10%">Pod</th>
-              <th width="15%">Critic / Info</th>
+              <th width="65%"><span style="border-bottom: 3px solid lightblue;">Module</span></th>
+              <th width="10%"><span style="border-bottom: 3px solid lightblue;">Complexity</span></th>
+              <th width="10%"><span style="border-bottom: 3px solid lightblue;">Pod</span></th>
+              <th width="15%"><span style="border-bottom: 3px solid lightblue;">Critic / Info</span></th>
             </tr>
           </thead>
           <tbody>
@@ -64,7 +95,7 @@
           { "data": "complexity" },
           { "data": "pod", "name": "pod",
             fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
-              $(nTd).html("<a href='"+oData.pod+"'><i class='small material-icons' style='color:#009688;'>book</i></a>");
+              $(nTd).html("<a href='/pod"+oData.pod+"'><i class='small material-icons' style='color:#009688;'>book</i></a>");
             }
           },
           { "data": "critic", "name": "critic",
@@ -75,6 +106,8 @@
         ]
       }
     );
+
+    $('#module-list_filter label input').attr('placeholder', 'Enter text to filter table');
   });
 </script>
 <script type="text/javascript">

@@ -1,89 +1,96 @@
 % layout 'default';
 % title 'POD Viewer';
-          <style>
-            body {
-                padding-top:70px;
-            }
-			h2 {
-				font-size: 3rem;
-			}
-            .sidenav {
-                background-color: rgba(34,34,34);
-                color: rgba(255,255,255,0.5);
-                border-bottom:5px solid gray;
-            }
-            .sidenav li>a {
-                height: auto;
-                line-height: 2;
-                color: rgba(255,255,255,0.5);;
-            }
-            .divider {
-                background-color: rgba(255,255,255,0.2);
-            }
-            pre, code {
-                background-color: rgb(214, 255, 223);
-                font-family: Hack, monospace;
-            }
-            pre {
-                padding: 1em;
-                overflow-x: scroll;
-            }
-            code {
-                padding: 0px 0.3em;
-            }
-            pre code {
-                padding: 0;
-            }
-	    l:after {content:"";display:table;clear:both;}
-	    dd {
-	        padding:.5em 0;
-	    }
-	    dl {
-	        width:100%;
-	    }
-	    dt, dd {
-	        display:inline-block;
-	        width:30%;
-	    }
-	    dt {
-	        text-align:right;
-	        font-weight:bold;
-	        clear:left;
-	        float:left;
-	    }
-	    dd {
-	        width:70%;
-	        padding-left:1em;
-	        clear:right;
-	    }
-	    dd + dd {
-	        float:right;
-	        clear:both;
-	    }
-	    dt:first-child {
-	        padding-top:.5em;
-	    }
-	    dd + dt {
-	       clear:both;
-	       padding-top:.5em;
-	    }
-	    dt + dt {
-	        width: 100%;
-	        float: none;
-	        padding: 0 70% 0 0;
-	    }
-	    dt + dt + dd {
-	        margin-top: -2em;
-	    }
-	    dt + dt + dd + dt {
-	        margin-top: 2em;
-	    }
-        </style>
+<style>
+	body {
+		/*padding-top:70px;*/
+	}
+	h2 {
+		font-size: 3rem;
+	}
+	p {
+		font-size: 16px;
+	}
+	.sidenav {
+		background-color: rgba(34,34,34);
+		color: rgba(255,255,255,0.5);
+		border-bottom:5px solid gray;
+	}
+	.sidenav li>a {
+		height: auto;
+		line-height: 2;
+		color: rgba(255,255,255,0.5);;
+	}
+	.divider {
+		background-color: #3bc492;
+	} 
+	pre, code {
+		background-color: rgb(214, 255, 223);
+		font-family: Hack, monospace;
+	}
+	pre {
+		padding: 1em;
+		overflow-x: scroll;
+	}
+	code {
+		padding: 0px 0.3em;
+	}
+	pre code {
+		padding: 0;
+	}
+	l:after {content:"";display:table;clear:both;}
+	dd {
+		padding:.5em 0;
+	}
+	dl {
+		width:100%;
+	}
+	dt, dd {
+		display:inline-block;
+		width:30%;
+	}
+	dt {
+		text-align:right;
+		font-weight:bold;
+		clear:left;
+		float:left;
+	}
+	dd {
+		width:70%;
+		padding-left:1em;
+		clear:right;
+	}
+	dd + dd {
+		float:right;
+		clear:both;
+	}
+	dt:first-child {
+		padding-top:.5em;
+	}
+	dd + dt {
+		clear:both;
+		padding-top:.5em;
+	}
+	dt + dt {
+		width: 100%;
+		float: none;
+		padding: 0 70% 0 0;
+	}
+	dt + dt + dd {
+		margin-top: -2em;
+	}
+	dt + dt + dd + dt {
+		margin-top: 2em;
+	}
+</style>
 <div class="container"><%== $pod %></div>
 
 <script>
   var scroll = new SmoothScroll('a[href*="#"]', {
     header: '[navbarbasicExample]',
     offset: function(anchor, toggle) { return 75; }
+  });
+
+  $(document).ready(function(){
+    $('.sidenav').sidenav();
   });
 </script>

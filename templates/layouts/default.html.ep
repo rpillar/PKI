@@ -2,19 +2,19 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link href="/css/bulma.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/dataTables.bulma.min.css" />
+    <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,700" rel='stylesheet' type='text/css'>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="/js/jquery.dataTables.min.js"></script>
-    <script src="/js/dataTables.bulma.min.js"></script>
+    <!--<script src="/js/jquery.dataTables.min.js"></script>-->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15/dist/smooth-scroll.polyfills.min.js"></script>
     <style>
       html, body {
           height: 100%;
+          font-family: Raleway;
       }
       .page-wrap {
           min-height: 100%;
@@ -24,18 +24,6 @@
           content: "";
           display: block;
       }
-      .navbar {
-        background-color: rgb(34, 34, 34); 
-      }
-      .navbar-item {
-        letter-spacing:2px; 
-        text-transform:uppercase;
-        font-size:24px;
-        font-family:Raleway;
-        font-weight:500;
-        color:#3bc492;
-      }
-      .navbar-item:hover {}
       h1 {
           font-size: 2.5rem;
       }
@@ -43,8 +31,8 @@
           font-size: 2.5rem;
           font-weight: 300;
       }
-      .container {
-          width: 70%;
+      .nav-wrapper {
+        background-color: teal;
       }
       #footer, .page-wrap:after {
           height:100px;
@@ -63,26 +51,21 @@
   </head>
   <body>
     <div class="page-wrap">
-      <nav class="navbar is-fixed-top is-dark" role="navigation" aria-label="main navigation">
-        <div class="container">
-          <div class="navbar-brand">
-            <a class="navbar-item" href="">
-              <span style="font-size:2rem;color:#00897b"><i class="material-icons">invert_colors</i></span>
+      <nav role="navigation" aria-label="main navigation">
+        <div class="nav-wrapper" style="background-color: rgb(34, 34, 34);">
+          <div class="container">
+            <a class="brand-logo" href="/">
+              <span><i class="material-icons large">invert_colors</i></span>
+              <span style="border-bottom:3px solid lightblue;font-size:24px;">PKI</span>
             </a>
-          </div>
-
-          <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
-              <a class="navbar-item is-size-5" href="/">
-                <span style="border-bottom:3px solid lightblue;">PKI</span>
-              </a>
-            </div>
+            <ul class="nav-mobile right" style="margin-left:25px;">
+              <li>
+              </li>
+            </ul>
           </div>
         </div>
       </nav>
-      <!--<div class="container">-->
-        <%= content %>
-      <!--</div>-->
+      <%= content %>
     </div>
 
     <div id="footer" style="border-bottom:5px solid gray; margin-top:30px;">

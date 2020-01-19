@@ -57,13 +57,6 @@ sub critic {
   );
 }
 
-sub dashboard {
-  my $self = shift;
-
-  # Render template "pki/dashboard.html.ep" with message
-  $self->render();
-}
-
 sub pod {
   my ( $self ) = @_;
 
@@ -85,7 +78,7 @@ sub pod {
 
   # add a sidenav for the links etc.
   $output =~ s/\<ul id="index"\>/\<ul id="slide-out" class="sidenav sidenav-fixed" style="padding-top:20px;"\>/;
-  $output =~ s/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>\<div class=\"divider\"\>\<\/div\>/;
+  $output =~ s/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>\<li\>\<div class=\"divider\"\>\<\/div\><\/li\>/;
   $output =~ s/\<li\>\<a href=\"\#SYNOPSIS\"\>SYNOPSIS\<\/a\>\<\/li\>/\<li\>\<a href=\"\#SYNOPSIS\"\>SYNOPSIS\<\/a\>\<\/li\>\<div class=\"divider\"\>\<\/div\>/;
   $output =~ s/\<li\>\<a href=\"\#DESCRIPTION\"\>DESCRIPTION\<\/a\>\<\/li\>/\<li\>\<a href=\"\#DESCRIPTION\"\>DESCRIPTION\<\/a\>\<\/li\>\<div class=\"divider\"\>\<\/div\>/;
   $output =~ s/\<li\>\<a href=\"\#USAGE\"\>USAGE\<\/a\>\<\/li\>/\<li\>\<a href=\"\#USAGE\"\>USAGE\<\/a\>\<\/li\>\<div class=\"divider\"\>\<\/div\>/;
@@ -104,8 +97,6 @@ sub summary {
 
   $summary_stmt->execute;
   while ( my $summary_data = $summary_stmt->fetchrow_hashref ) {
-    #$summary_stmt->execute( $module );
-    #my $summary_data = $summary_stmt->fetchrow_hashref;
     push @modules, { 
       module     => $summary_data->{ module },
       compiles   => "Y",
