@@ -5,7 +5,7 @@ The parsing of the modules to pull out inheritance / dependency data is based on
 
 # Notes
 
-The config file - `filelib.conf` - holds the full path to libraries that are parsed during the runnning of the perl_file.pl script **or** when the app is running the possible location of the modules that are parsed for POD. These locations may differ and whilst I could have two config files I leave it up to the user to amend the file as necessary.
+The config file - `filelib.conf` - holds the full path to libraries that are parsed during the runnning of the `perl_files.pl` script **or** when the app is running the possible location of the modules that are parsed for POD. These locations may differ and whilst I could have two config files I leave it up to the user to amend the file as necessary.
 
 # To run
 
