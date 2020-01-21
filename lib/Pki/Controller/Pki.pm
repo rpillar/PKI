@@ -64,8 +64,11 @@ sub pod {
 
   my $module = $self->param('module');
   #my @lib_dirs; = ("/Users/richardpillar/perl/Stylus-C/Stylus/lib");
+  $self->app->log->debug('PKI - find pod for :' . $self->param('module'));
+  use Data::Dumper;
+  $self->app->log->debug('PKI - debug : config libs - ' . Dumper($config->get('libs')));
   my $path = Pod::Simple::Search->new->inc(0)->find( $module, @{ $config->get('libs') } );
-
+  $self->app->log->debug('PKI - debug : module path - ' . $path );
   return $self->res->code(301) && $self->redirect_to("https://metacpan.org/pod/$module") unless $path && -r $path;
 
   my $parser = MetaCPAN::Pod::XHTML->new;
