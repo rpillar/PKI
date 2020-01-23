@@ -51,20 +51,22 @@
   </head>
   <body>
     <div class="page-wrap">
-      <nav role="navigation" aria-label="main navigation">
-        <div class="nav-wrapper" style="background-color: rgb(34, 34, 34);">
-          <div class="container">
-            <a class="brand-logo" href="/">
-              <span><i class="material-icons large">invert_colors</i></span>
-              <span style="border-bottom:3px solid lightblue;font-size:24px;">PKI</span>
-            </a>
-            <ul class="nav-mobile right" style="margin-left:25px;">
-              <li>
-              </li>
-            </ul>
+      <div class="navbar-fixed">
+        <nav role="navigation" aria-label="main navigation">
+          <div class="nav-wrapper" style="background-color: rgb(34, 34, 34);">
+            <div class="container">
+              <a class="brand-logo" href="/">
+                <span><i class="material-icons large">invert_colors</i></span>
+                <span style="border-bottom:3px solid lightblue;font-size:24px;">PKI</span>
+              </a>
+              <ul class="nav-mobile right" style="margin-left:25px;">
+                <li>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </div>
       <%= content %>
     </div>
 

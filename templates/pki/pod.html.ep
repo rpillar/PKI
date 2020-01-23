@@ -20,9 +20,10 @@
 		line-height: 2;
 		color: rgba(255,255,255,0.5);;
 	}
-	.divider {
-		background-color: #3bc492;
-	} 
+	.sidenav-overlay {
+		opacity: 0;
+		background-color: transparent;
+	}
 	pre, code {
 		background-color: rgb(214, 255, 223);
 		font-family: Hack, monospace;
@@ -81,7 +82,54 @@
 	dt + dt + dd + dt {
 		margin-top: 2em;
 	}
+	.pod-menu {
+		position: fixed;
+		top: 8px;
+		left: 40px;
+		z-index: 999;
+	}
+	#NAME {
+		text-decoration: underline;
+		text-underline-position: under;
+		text-decoration-color: lightblue;
+	}
+	#SYNOPSIS {
+		text-decoration: underline;
+		text-underline-position: under;
+		text-decoration-color: lightblue;
+	}
+	#DESCRIPTION {
+		text-decoration: underline;
+		text-underline-position: under;
+		text-decoration-color: lightblue;
+	}
+	#METHODS {
+		text-decoration: underline;
+		text-underline-position: under;
+		text-decoration-color: lightblue;
+	}
+	#SEE-ALSO {
+		text-decoration: underline;
+		text-underline-position: under;
+		text-decoration-color: lightblue;
+	}
+	#AUTHOR {
+		text-decoration: underline;
+		text-underline-position: under;
+		text-decoration-color: lightblue;
+	}
+	#LICENSE {
+		text-decoration: underline;
+		text-underline-position: under;
+		text-decoration-color: lightblue;
+	}
 </style>
+
+<div class='pod-menu'>
+	<a href='#' data-target='slide-out' class="sidenav-trigger">
+		<i class='medium material-icons' style='font-size: 3.5rem;color: #fff;'>menu</i>
+	</a>
+</div>
 <div class="container"><%== $pod %></div>
 
 <script>
@@ -91,6 +139,8 @@
   });
 
   $(document).ready(function(){
-    $('.sidenav').sidenav();
+    $('.sidenav').sidenav({
+		preventScrolling: false
+	});
   });
 </script>

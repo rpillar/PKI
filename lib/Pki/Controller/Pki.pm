@@ -80,7 +80,7 @@ sub pod {
   $parser->parse_file($path);
 
   # add a sidenav for the links etc.
-  $output =~ s/\<ul id="index"\>/\<ul id="slide-out" class="sidenav sidenav-fixed" style="padding-top:20px;"\>/;
+  $output =~ s/\<ul id="index"\>/\<ul id="slide-out" class="sidenav" style="transform:translateX:(-100%);padding-top:20px;"\>/;
   $output =~ s/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>\<li\>\<div class=\"divider\"\>\<\/div\><\/li\>/;
   $output =~ s/\<li\>\<a href=\"\#SYNOPSIS\"\>SYNOPSIS\<\/a\>\<\/li\>/\<li\>\<a href=\"\#SYNOPSIS\"\>SYNOPSIS\<\/a\>\<\/li\>\<div class=\"divider\"\>\<\/div\>/;
   $output =~ s/\<li\>\<a href=\"\#DESCRIPTION\"\>DESCRIPTION\<\/a\>\<\/li\>/\<li\>\<a href=\"\#DESCRIPTION\"\>DESCRIPTION\<\/a\>\<\/li\>\<div class=\"divider\"\>\<\/div\>/;

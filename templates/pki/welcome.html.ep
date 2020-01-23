@@ -76,6 +76,7 @@
 
 <script>
   $( document).ready(function() {
+
     $('#podname-button').on('click', function(e) {
       e.preventDefault;
 
