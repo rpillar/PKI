@@ -43,6 +43,10 @@
   .hide-data {
     display:none;
   }
+  .complexity-high {
+    border-bottom: 3px solid red;
+    padding: 0 0 4px;
+  }
 </style>
 
 <section>
@@ -93,7 +97,16 @@
         },
         "columns": [
           { "data": "module" },
-          { "data": "complexity" },
+          { "data": "complexity", "name": "complexity",
+            fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
+              if ( oData.complexity > 10 ) {
+                $(nTd).html("<span class='complexity-high'>"+oData.complexity+"</span>");
+              }
+              else {
+                $(nTd).html(oData.complexity);
+              }
+            }
+          },
           { "data": "pod", "name": "pod",
             fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
               $(nTd).html("<a href='/pod"+oData.pod+"'><i class='small material-icons' style='color:#009688;'>book</i></a>");

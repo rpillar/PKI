@@ -67,7 +67,7 @@ sub pod {
   $self->app->log->debug('PKI - find pod for :' . $self->param('module'));
   use Data::Dumper;
   $self->app->log->debug('PKI - debug : config libs - ' . Dumper($config->get('libs')));
-  my $path = Pod::Simple::Search->new->inc(0)->find( $module, @{ $config->get('libs') } );
+  my $path = Pod::Simple::Search->new->inc(0)->verbose(1)->find( $module, @{ $config->get('libs') } );
   $self->app->log->debug('PKI - debug : module path - ' . $path );
   return $self->res->code(301) && $self->redirect_to("https://metacpan.org/pod/$module") unless $path && -r $path;
 

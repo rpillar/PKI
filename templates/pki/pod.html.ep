@@ -123,6 +123,11 @@
 		text-underline-position: under;
 		text-decoration-color: lightblue;
 	}
+	#ATTRIBUTES {
+		text-decoration: underline;
+		text-underline-position: under;
+		text-decoration-color: lightblue;
+	}
 </style>
 
 <div class='pod-menu'>
