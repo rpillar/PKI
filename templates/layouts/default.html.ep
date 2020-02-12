@@ -52,7 +52,7 @@
   <body>
     <div class="page-wrap">
       <div class="navbar-fixed">
-        <nav role="navigation" aria-label="main navigation">
+        <nav role="navigation" aria-label="main navigation" class="nav-extended">
           <div class="nav-wrapper" style="background-color: rgb(34, 34, 34);">
             <div class="container">
               <a class="brand-logo" href="/">
@@ -73,7 +73,7 @@
     <div id="footer" style="border-bottom:5px solid gray; margin-top:30px;">
       <div class="container">
         <div class="row" style="margin-top:15px;">
-          <a href="developontheweb.co.uk" style="letter-spacing:2px; text-transform:uppercase;font-size:28px;font-family:Raleway;font-weight:500;color:#3bc492;padding-top:15px;">
+          <a href="http://www.developontheweb.co.uk" style="letter-spacing:2px; text-transform:uppercase;font-size:28px;font-family:Raleway;font-weight:500;color:#3bc492;padding-top:15px;">
             <span style="padding-bottom:2px; border-bottom:2px solid black;">developonthe<span style="font-weight:700;"><em>web</em></span></span>
           </a>
         </div>

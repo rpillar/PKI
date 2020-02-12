@@ -1,9 +1,6 @@
 % layout 'default';
 % title 'POD Viewer';
 <style>
-	body {
-		/*padding-top:70px;*/
-	}
 	h2 {
 		font-size: 3rem;
 	}
@@ -11,7 +8,7 @@
 		font-size: 16px;
 	}
 	.sidenav {
-		background-color: rgba(34,34,34);
+		background-color: #263238;
 		color: rgba(255,255,255,0.5);
 		border-bottom:5px solid gray;
 	}
@@ -88,6 +85,10 @@
 		left: 40px;
 		z-index: 999;
 	}
+	.menu-active {
+    	border-bottom: 3px solid #fff;
+    	padding: 0 0 4px;
+	}
 	#NAME {
 		text-decoration: underline;
 		text-underline-position: under;
@@ -128,6 +129,44 @@
 		text-underline-position: under;
 		text-decoration-color: lightblue;
 	}
+	/* critic styling */
+	table tr {
+    	line-height: 1.5;
+  	}
+  	table tr th {
+    	font-size: 1.4em;
+    	cursor: pointer;
+    	outline: none;
+  	}
+  	td {
+    	font-size: 1.3rem;
+    	padding:12px 5px;
+    	font-weight: 600;
+  	}
+  	.dataTables_info {
+    	margin-bottom: 10px;
+  	}
+  	#critic-list_paginate a.paginate_button {
+    	text-decoration: none;
+    	background-color: #26a69a;
+    	color: #fff;
+    	border: none;
+    	border-radius: 2px;
+    	height: 36px;
+    	line-height: 36px;
+    	padding: 10px 12px;
+    	text-transform: uppercase;
+    	margin: 10px 5px;
+    	cursor: pointer;
+  	}
+  	.collection-item{
+    	font-size: 1.1rem;
+    	padding:10px 5px;
+    	font-weight: 600;
+  	}
+	table.striped>tbody>tr:nth-child(odd) {
+		background-color: #eceff1;
+	}
 </style>
 
 <div class='pod-menu'>
@@ -135,17 +174,109 @@
 		<i class='medium material-icons' style='font-size: 3.5rem;color: #fff;'>menu</i>
 	</a>
 </div>
-<div class="container"><%== $pod %></div>
+<div id="pod" class="container perl-data" style="padding-top:70px;"><%== $pod %></div>
+<div id="info" class="container perl-data" style="padding-top:70px; display:none;">
+	<div>
+        <h2><span style="border-bottom:4px solid lightblue;"><%= $module %></span></h2>
+    </div>
+    % if (@$inheritance) {
+    	<div>
+          <h2><span style="border-bottom:2px solid lightblue;">Inheritance</span></h2>
+          <ul class="collection">
+            % foreach my $inheritance (@$inheritance) {
+              <li class="collection-item"><a href="/pod/<%= $inheritance %>"><%= $inheritance %></a></li>
+            % }
+          </ul>
+        </div>
+    % }
+    <div>
+        <h2><span style="border-bottom:3px solid lightblue;">Dependencies</span></h2>
+        <ul class="collection">
+          % foreach my $dependency (@$dependencies) {
+            <li class="collection-item"><a href="/pod/<%= $dependency %>"><%= $dependency %></a></li>
+          % }
+        </ul>
+    </div>
+</div>
+<div id="critic" class="container perl-data" style="padding-top:70px; display:none;">
+	<div>
+        <h2><span style="border-bottom:4px solid lightblue;"><%= $module %></span></h2>
+    </div>
+	<div>
+        <h2><span style="border-bottom:3px solid lightblue;">Perl Critic</span></h2>
+        <table id="critic-list" class="striped" style="100%;word-wrap:break-word;">
+          <thead style="background-color: #cf09ef00;">
+            <tr>
+              <th><span style="border-bottom: 3px solid lightblue;">Line Number</span></th>
+              <th><span style="border-bottom: 3px solid lightblue;">Critic</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            % foreach my $critic (@$critics) {
+                <tr>
+                  <td><%= $critic->{line_number} %></td>
+                  <td><%= $critic->{critic} %></td>
+                </tr>
+            % }
+          </tbody
+        </table>
+    </div>
+</div>
 
 <script>
   var scroll = new SmoothScroll('a[href*="#"]', {
     header: '[navbarbasicExample]',
-    offset: function(anchor, toggle) { return 75; }
+    offset: function(anchor, toggle) { return 120; }
   });
 
   $(document).ready(function(){
     $('.sidenav').sidenav({
 		preventScrolling: false
 	});
+	$('nav.nav-extended').append('<div class="nav-content" style="background-color: #263238;">'
+		+ '<div class="container" style="padding:0 70px;">'
+		+ '<ul class="tabs tabs-transparent">'
+		+ '<li class="tab"><a id="pod-link" href="#" class="menu-active" style="font-size:22px">Pod</a></li>'
+		+ '<li class="tab"><a id="info-link"href="#" style="font-size:22px">Info</a></li>'
+		+ '<li class="tab"><a id="critic-link" href="#" style="font-size:22px">Critic</a></li>'
+		+ '</ul>'
+		+ '</div>'
+		+ '</div>'
+	);
+	$('#pod-link').on('click', () => {
+		$('li.tab a').removeClass();
+		$('div.perl-data').hide();
+		$('div.pod-menu').show();
+		$('#pod-link').addClass('menu-active');
+		$('#pod').show();
+	});
+	$('#info-link').on('click', () => {
+		$('li.tab a').removeClass('menu-active');
+		$('.perl-data').hide();
+		$('div.pod-menu').hide();
+		$('#info-link').addClass('menu-active');
+		$('#info').show();
+	});
+	$('#critic-link').on('click', () => {
+		$('li.tab a').removeClass('menu-active');
+		$('.perl-data').hide();
+		$('div.pod-menu').hide();
+		$('#critic-link').addClass('menu-active');
+		$('#critic').show();
+	});
   });
+</script>
+
+<script>
+    $('#critic-list').DataTable({
+		"searching": false, 
+		"lengthChange": false, 
+		"autoWidth": false,
+		"pageLength": 10,
+		"columnDefs": [
+			{ "width": "200px", "targets": 0 },
+			{ "width": "800px", "targets": 1 }
+		],
+		"fixedColums": true
+	});
 </script>
