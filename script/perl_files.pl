@@ -49,7 +49,7 @@ sub _collect_critic_data {
     my ( $module, $file ) = @_;
 
     my @critic_data = ();
-    my $critic = Perl::Critic->new( -theme => "maintenance" ); 
+    my $critic = Perl::Critic->new( -severity => 3, -theme => "maintenance" ); 
     my @issues = $critic->critique($file->stringify); 
 
     foreach ( @issues ) { 

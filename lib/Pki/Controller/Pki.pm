@@ -132,15 +132,6 @@ sub _info {
   my ( $inheritance_module, $inheritance_jsondata ) = $inheritance_stmt->fetchrow_array;
   my $inheritance_data                              = decode_json( $inheritance_jsondata );
 
-  # Render template "pki/critic.html.ep"
-  #$self->render(
-  #  template => 'pki/critic', 
-  #  module => $module, 
-  #  critics => \@critics, 
-  #  dependencies => $dependency_data, 
-  #  inheritance => $inheritance_data
-  #);
-
   return ( $dependency_data, $inheritance_data );
 }
 

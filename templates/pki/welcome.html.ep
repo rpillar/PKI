@@ -24,6 +24,9 @@
   .dataTables_info {
     margin-bottom: 10px;
   }
+  table.striped>tbody>tr:nth-child(odd) {
+		background-color: #eceff1;
+	}
   #module-list_paginate a.paginate_button {
     text-decoration: none;
     background-color: #26a69a;
