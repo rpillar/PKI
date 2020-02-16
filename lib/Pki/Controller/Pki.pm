@@ -72,7 +72,10 @@ sub summary {
     push @modules, { 
       module     => $summary_data->{ module },
       compiles   => "Y",
-      complexity => $summary_data->{max_complexity} ? $summary_data->{max_complexity} : 0,
+      max_complexity => $summary_data->{max_complexity} ? $summary_data->{max_complexity} : 0,
+      avg_complexity => $summary_data->{avg_complexity} ? $summary_data->{avg_complexity} : 0,
+      lines => $summary_data->{ lines },
+      subs  => $summary_data->{ sub_count },
       pod        => '/' . $summary_data->{ module },
       pod_score  => $summary_data->{pod},
       hierarchy  => "N",

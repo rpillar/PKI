@@ -83,9 +83,16 @@ sub _collect_metrics_data {
 
     my $summary = $analysis->summary_stats;
     my $lines   = $analysis->lines;
-    $query = "insert into summary (module, max_complexity, lines, pod) values(?, ?, ?, ?)";
+    $query = "insert into summary (module, avg_complexity, max_complexity, lines, pod, sub_count) values(?, ?, ?, ?, ?, ?)";
     $stmt  = $dbh->prepare( $query );
-    $stmt->execute( $module, $summary->{ sub_complexity }->{ max }, $lines, 0 );
+    $stmt->execute( 
+        $module, 
+        int($summary->{ sub_complexity }->{ mean }), 
+        $summary->{ sub_complexity }->{ max }, 
+        $lines, 
+        0,
+        $analysis->sub_count()
+    );
 
     return;
 }

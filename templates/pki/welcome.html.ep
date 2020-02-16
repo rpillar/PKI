@@ -68,8 +68,9 @@
         <table id="module-list" class="striped row-border">
           <thead style="background-color: #cf09ef00;">
             <tr>
-              <th width="65%"><span style="border-bottom: 3px solid lightblue;">Module</span></th>
-              <th width="10%"><span style="border-bottom: 3px solid lightblue;">Complexity</span></th>
+              <th width="55%"><span style="border-bottom: 3px solid lightblue;">Module</span></th>
+              <th width="20%"><span style="border-bottom: 3px solid lightblue;">Lines/Subs</span></th>
+              <th width="20%"><span style="border-bottom: 3px solid lightblue;">Complexity</span></th>
               <th width="10%"><span style="border-bottom: 3px solid lightblue;">Pod</span></th>
             </tr>
           </thead>
@@ -99,13 +100,18 @@
         },
         "columns": [
           { "data": "module" },
-          { "data": "complexity", "name": "complexity",
+          { "data": "lines", "name": "lines",
             fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
-              if ( oData.complexity > 10 ) {
-                $(nTd).html("<span class='complexity-high'>"+oData.complexity+"</span>");
+                $(nTd).html("<span>"+oData.lines+' / '+oData.subs+"</span>");
+            }
+          },
+          { "data": "max_complexity", "name": "max_complexity",
+            fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
+              if ( oData.max_complexity > 10 ) {
+                $(nTd).html("<span class='complexity-high'>"+oData.max_complexity+' / '+oData.avg_complexity+"</span>");
               }
               else {
-                $(nTd).html(oData.complexity);
+                $(nTd).html("<span>"+oData.max_complexity+' / '+oData.avg_complexity+"</span>");
               }
             }
           },
@@ -114,11 +120,6 @@
               $(nTd).html("<a href='/pod"+oData.pod+"'><i class='small material-icons' style='color:#009688;'>book</i></a>");
             }
           }
-          //{ "data": "critic", "name": "critic",
-          //  fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
-          //    $(nTd).html("<a href='"+oData.critic+"'><i class='small material-icons' style='color:#ff1744;'>call_to_action</i></a>");
-          //  }
-          //}
         ]
       }
     );
