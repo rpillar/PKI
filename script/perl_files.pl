@@ -10,6 +10,7 @@ use JSON;
 use Path::Tiny;
 use Perl::Critic;
 use Perl::Metrics::Simple;
+use Pod::Simple::Search;
 use Safe;
 
 my $dbh = DBI->connect("dbi:SQLite:critic.db","","") or die "Could not connect";
@@ -39,11 +40,16 @@ foreach ( @{ $config->get('libs') } ) {
         ( $module = $file ) =~ s/(^.+\/lib\/|\.pm$)//g;
         $module =~ s/\//::/g;
     
-        _collect_metrics_data( $module, $file );
+        my $pod_score = _collect_pod_data( $module, $file );
+        _collect_metrics_data( $module, $file, $pod_score );
         _collect_critic_data( $module, $file );
         _collect_use_data( $module, $file );
     }
 }
+
+=head2 _collect_critic_data
+
+=cut
 
 sub _collect_critic_data {
     my ( $module, $file ) = @_;
@@ -66,8 +72,12 @@ sub _collect_critic_data {
     return;
 }
 
+=head2 _collect_metrics_data
+
+=cut
+
 sub _collect_metrics_data {
-    my ( $module, $file ) = @_;
+    my ( $module, $file, $pod_score ) = @_;
 
     my @file_array = ( $file->stringify );
     my $analysis = $analyzer->analyze_files( @file_array );
@@ -87,15 +97,36 @@ sub _collect_metrics_data {
     $stmt  = $dbh->prepare( $query );
     $stmt->execute( 
         $module, 
-        int($summary->{ sub_complexity }->{ mean }), 
+        $summary->{ sub_complexity }->{ mean } ? int($summary->{ sub_complexity }->{ mean } ) : 0, 
         $summary->{ sub_complexity }->{ max }, 
-        $lines, 
-        0,
+        $lines || 0, 
+        $pod_score || 0,
         $analysis->sub_count()
     );
 
     return;
 }
+
+=head2 _collect_pod_data
+
+Returns a 1 / 0 depending on whether the B<file> contains POD
+
+=cut
+
+sub _collect_pod_data {
+    my ( $module, $file ) = @_;
+
+    my $finder = Pod::Simple::Search->new;
+    if ( $finder->contains_pod( $file ) ) {
+        return 1;
+    }
+
+    return 0;
+}
+
+=head2 _collect_use_data
+
+=cut
 
 sub _collect_use_data {
     my ( $module, $file ) = @_;
@@ -160,6 +191,12 @@ sub _collect_use_data {
     return $file_data->{'data'};
 }
 
+=head2 _initialize
+
+Reset everything before scanning the specified repos
+
+=cut
+
 sub _initialize {
     my $query = "delete from critic";
     my $stmt  = $dbh->prepare( $query );
@@ -183,6 +220,10 @@ sub _initialize {
 
     return;
 }
+
+=head2 _parse_dependencies
+
+=cut
 
 sub _parse_dependencies {
     my ($file_data, $line) = @_;
@@ -222,6 +263,10 @@ sub _parse_dependencies {
 
     return $file_data;
 }
+
+=head2 _parse_inheritance
+
+=cut
 
 sub _parse_inheritance {
     my ($file_data, $line, $fh) = @_;
@@ -265,6 +310,10 @@ sub _parse_inheritance {
     return $file_data;
 }
 
+=head2 _parse_package
+
+=cut
+
 sub _parse_package {
     my ($file_data, $line) = @_;
 
@@ -289,6 +338,10 @@ sub _parse_package {
 
     return $file_data;
 }
+
+=head2 _util_dpush
+
+=cut
 
 sub _util_dpush {
     my ($file_data, $key, $value) = @_;

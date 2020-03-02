@@ -19,40 +19,41 @@ sub pod {
 
   my $config = Config::JSON->new("./script/filelib.conf");
 
-  my $module = $self->param('module');
-  $self->app->log->debug('PKI - find pod for :' . $module);
-  use Data::Dumper;
-  $self->app->log->debug('PKI - debug : config libs - ' . Dumper($config->get('libs')));
-  my $path = Pod::Simple::Search->new->inc(0)->verbose(1)->find( $module, @{ $config->get('libs') } );
-  $self->app->log->debug('PKI - debug : module path - ' . $path );
-  return $self->res->code(301) && $self->redirect_to("https://metacpan.org/pod/$module") unless $path && -r $path;
+  my $module    = $self->param( 'module' );
+  my $pod_score = $self->param( 'pod_score' );
 
-  my $parser = MetaCPAN::Pod::XHTML->new;
-  $parser->$_('') for qw(html_header html_footer);
-  $parser->anchor_items(1); # adds <a> to =items
-  $parser->index(1);
-  $parser->perldoc_url_prefix('/pod/');
-  $parser->output_string(\my $output);
-  $parser->parse_file($path);
+  my $output;
+  if ( $pod_score ) {
+    my $path = Pod::Simple::Search->new->inc(0)->verbose(1)->find( $module, @{ $config->get('libs') } );
+ 
+    my $parser = MetaCPAN::Pod::XHTML->new;
+    $parser->$_('') for qw(html_header html_footer);
+    $parser->anchor_items(1); # adds <a> to =items
+    $parser->index(1);
+    $parser->perldoc_url_prefix('/pod/');
+    $parser->output_string(\$output);
+    $parser->parse_file($path);
 
-  # add a sidenav for the links etc.
-  $output =~ s/\<ul id="index"\>/\<ul id="slide-out" class="sidenav" style="transform:translateX:(-100%);padding-top:20px;"\>/;
-  $output =~ s/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>\<li\>\<\/li\>/;
-  $output =~ s/\<li\>\<a href=\"\#SYNOPSIS\"\>SYNOPSIS\<\/a\>\<\/li\>/\<li\>\<a href=\"\#SYNOPSIS\"\>SYNOPSIS\<\/a\>\<\/li\>/;
-  $output =~ s/\<li\>\<a href=\"\#DESCRIPTION\"\>DESCRIPTION\<\/a\>\<\/li\>/\<li\>\<a href=\"\#DESCRIPTION\"\>DESCRIPTION\<\/a\>\<\/li\>/;
-  $output =~ s/\<li\>\<a href=\"\#USAGE\"\>USAGE\<\/a\>\<\/li\>/\<li\>\<a href=\"\#USAGE\"\>USAGE\<\/a\>\<\/li\>/;
-  $output =~ s/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>/;
+    # add a sidenav for the links etc.
+    $output =~ s/\<ul id="index"\>/\<ul id="slide-out" class="sidenav" style="transform:translateX:(-100%);padding-top:20px;"\>/;
+    $output =~ s/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>/\<li\>\<a href=\"\#NAME\"\>NAME\<\/a\>\<\/li\>\<li\>\<\/li\>/;
+    $output =~ s/\<li\>\<a href=\"\#SYNOPSIS\"\>SYNOPSIS\<\/a\>\<\/li\>/\<li\>\<a href=\"\#SYNOPSIS\"\>SYNOPSIS\<\/a\>\<\/li\>/;
+    $output =~ s/\<li\>\<a href=\"\#DESCRIPTION\"\>DESCRIPTION\<\/a\>\<\/li\>/\<li\>\<a href=\"\#DESCRIPTION\"\>DESCRIPTION\<\/a\>\<\/li\>/;
+    $output =~ s/\<li\>\<a href=\"\#USAGE\"\>USAGE\<\/a\>\<\/li\>/\<li\>\<a href=\"\#USAGE\"\>USAGE\<\/a\>\<\/li\>/;
+    $output =~ s/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>/;
+  }
 
   my ( $dependency_data, $inheritance_data ) = $self->_info( $module );
   my $critics                                = $self->_critic( $module );
 
   # Render template "pki/pod.html.ep" with pod output
   $self->render(
-    template => 'pki/pod', 
-    pod => $output, 
+    template     => 'pki/pod', 
+    pod          => $output, 
+    pod_score    => $pod_score,
     dependencies => $dependency_data, 
-    inheritance => $inheritance_data,
-    critics => $critics
+    inheritance  => $inheritance_data,
+    critics      => $critics
   );
 }
 
@@ -72,12 +73,11 @@ sub summary {
     push @modules, { 
       module     => $summary_data->{ module },
       compiles   => "Y",
-      max_complexity => $summary_data->{max_complexity} ? $summary_data->{max_complexity} : 0,
-      avg_complexity => $summary_data->{avg_complexity} ? $summary_data->{avg_complexity} : 0,
+      max_complexity => $summary_data->{ max_complexity } ? $summary_data->{ max_complexity } : 0,
+      avg_complexity => $summary_data->{ avg_complexity } ? $summary_data->{ avg_complexity } : 0,
       lines => $summary_data->{ lines },
       subs  => $summary_data->{ sub_count },
-      pod        => '/' . $summary_data->{ module },
-      pod_score  => $summary_data->{pod},
+      pod        => '/' . $summary_data->{ module } . '/' . $summary_data->{ pod },
       hierarchy  => "N",
       critic     => 'critic/' . $summary_data->{ module },
     } 

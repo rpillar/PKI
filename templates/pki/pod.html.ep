@@ -169,12 +169,25 @@
 	}
 </style>
 
-<div class='pod-menu'>
-	<a href='#' data-target='slide-out' class="sidenav-trigger">
-		<i class='medium material-icons' style='font-size: 3.5rem;color: #fff;'>menu</i>
-	</a>
-</div>
-<div id="pod" class="container perl-data" style="padding-top:70px;"><%== $pod %></div>
+% if ( $pod_score ) {
+	<div class='pod-menu'>
+		<a href='#' data-target='slide-out' class="sidenav-trigger">
+			<i class='medium material-icons' style='font-size: 3.5rem;color: #fff;'>menu</i>
+		</a>
+	</div>
+	<div id="pod" class="container perl-data" style="padding-top:70px;">
+		<div>
+			<h2><span style="border-bottom:4px solid lightblue;"><%= $module %></span></h2>
+		</div>
+		<%== $pod %>
+	</div>
+% }
+% else {
+	<div id="pod" class="container perl-data" style="padding-top:70px;">
+		<h2><span style="border-bottom:4px solid lightblue;"><%= $module %></span></h2>
+		<p style="font-size:22px;">No POD could be found for this module.</p>
+	</div>
+% }
 <div id="info" class="container perl-data" style="padding-top:70px; display:none;">
 	<div>
         <h2><span style="border-bottom:4px solid lightblue;"><%= $module %></span></h2>
