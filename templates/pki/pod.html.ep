@@ -169,7 +169,7 @@
 	}
 </style>
 
-% if ( $pod_score ) {
+% if ( $pod_score and $pod_score > 1 ) {
 	<div class='pod-menu'>
 		<a href='#' data-target='slide-out' class="sidenav-trigger">
 			<i class='medium material-icons' style='font-size: 3.5rem;color: #fff;'>menu</i>
