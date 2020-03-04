@@ -118,10 +118,10 @@ sub _collect_pod_data {
 
     my $finder = Pod::Simple::Search->new;
     if ( $finder->contains_pod( $file ) ) {
-        return 1;
+        return 2;
     }
 
-    return 0;
+    return 1;
 }
 
 =head2 _collect_use_data

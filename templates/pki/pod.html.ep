@@ -197,7 +197,7 @@
           <h2><span style="border-bottom:2px solid lightblue;">Inheritance</span></h2>
           <ul class="collection">
             % foreach my $inheritance (@$inheritance) {
-              <li class="collection-item"><a href="/pod/<%= $inheritance %>"><%= $inheritance %></a></li>
+              <li class="collection-item"><a href="/pod/<%= $inheritance %>/0"><%= $inheritance %></a></li>
             % }
           </ul>
         </div>
@@ -206,7 +206,7 @@
         <h2><span style="border-bottom:3px solid lightblue;">Dependencies</span></h2>
         <ul class="collection">
           % foreach my $dependency (@$dependencies) {
-            <li class="collection-item"><a href="/pod/<%= $dependency %>"><%= $dependency %></a></li>
+            <li class="collection-item"><a href="/pod/<%= $dependency %>/0"><%= $dependency %></a></li>
           % }
         </ul>
     </div>

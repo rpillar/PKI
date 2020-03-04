@@ -22,8 +22,20 @@ sub pod {
   my $module    = $self->param( 'module' );
   my $pod_score = $self->param( 'pod_score' );
 
+  if ( not $pod_score ) {
+    my $summary_query = "select module, pod from summary where module = ?";
+    my $summary_stmt  = $dbh->prepare( $summary_query );
+    $summary_stmt->execute( $module );
+
+    my ( $is_our_module, $my_pod_score ) = $summary_stmt->fetchrow_array;
+    if ( not $is_our_module ) {
+      return $self->res->code(301) && $self->redirect_to("https://metacpan.org/pod/$module");
+    }
+    $pod_score = $my_pod_score;
+  }
+
   my $output;
-  if ( $pod_score ) {
+  if ( $pod_score == 2 ) {
     my $path = Pod::Simple::Search->new->inc(0)->verbose(1)->find( $module, @{ $config->get('libs') } );
  
     my $parser = MetaCPAN::Pod::XHTML->new;
@@ -126,7 +138,6 @@ sub _info {
   $dependency_stmt->execute( $module );
   my ( $module_name, $dependency_jsondata ) = $dependency_stmt->fetchrow_array;
   my $dependency_data                       = decode_json( $dependency_jsondata );
-  #push @dependencies, { dependency => $dependency_data };
 
   # get inheritance data
   my $inheritance_query = "select module, inheritance from inheritance where module = ?";
