@@ -17,7 +17,7 @@ my $dbh = DBI->connect("dbi:SQLite:critic.db","","") or die "Could not connect";
 sub pod {
   my ( $self ) = @_;
 
-  my $config = Config::JSON->new("./script/filelib.conf");
+  my $config = Config::JSON->new("./script/runlib.conf");
 
   my $module    = $self->param( 'module' );
   my $pod_score = $self->param( 'pod_score' );

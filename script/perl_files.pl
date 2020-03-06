@@ -22,7 +22,7 @@ my $analyzer = Perl::Metrics::Simple->new;
 my $libs;
 
 # try to import every .pm file in /lib
-my $config = Config::JSON->new("./script/filelib.conf");
+my $config = Config::JSON->new("./script/modulelib.conf");
 
 foreach ( @{ $config->get('libs') } ) {
     my $path = $_;
