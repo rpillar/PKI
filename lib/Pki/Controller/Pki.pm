@@ -57,6 +57,7 @@ sub pod {
 
   my ( $dependency_data, $inheritance_data ) = $self->_info( $module );
   my $critics                                = $self->_critic( $module );
+  my $gitlog                                 = $self->_gitlog( $module );
 
   # Render template "pki/pod.html.ep" with pod output
   $self->render(
@@ -65,7 +66,8 @@ sub pod {
     pod_score    => $pod_score,
     dependencies => $dependency_data, 
     inheritance  => $inheritance_data,
-    critics      => $critics
+    critics      => $critics,
+    gitlog       => $gitlog
   );
 }
 
@@ -127,6 +129,20 @@ sub _critic {
   }
 
   return \@critics;
+}
+
+sub _gitlog {
+  my ( $self, $module ) = @_;
+
+  # get gitlog data
+  my $gitlog_query = "select module, log from gitlog where module = ?";
+  my $gitlog_stmt  = $dbh->prepare( $gitlog_query );
+  $gitlog_stmt->execute( $module );
+  my ( $module_name, $gitlog_data ) = $gitlog_stmt->fetchrow_array;
+  $gitlog_data =~ s/^\s+//;
+  $gitlog_data =~ s/^\t+//;
+
+  return $gitlog_data;
 }
 
 sub _info {

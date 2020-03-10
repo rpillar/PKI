@@ -3,7 +3,9 @@
 use strict;
 use warnings;
 
+use Capture::Tiny ':all';
 use Config::JSON;
+use Cwd;
 use DDP;
 use DBI;
 use JSON;
@@ -24,7 +26,7 @@ my $libs;
 # try to import every .pm file in /lib
 my $config = Config::JSON->new("./script/modulelib.conf");
 
-foreach ( @{ $config->get('libs') } ) {
+foreach ( @{ $config->get( 'libs' ) } ) {
     my $path = $_;
     my $dir = path($path);
     my $iter = $dir->iterator({
@@ -44,6 +46,7 @@ foreach ( @{ $config->get('libs') } ) {
         _collect_metrics_data( $module, $file, $pod_score );
         _collect_critic_data( $module, $file );
         _collect_use_data( $module, $file );
+        _collect_git_data( path($path)->parent->stringify, $module, $config->get( 'git' ) );
     }
 }
 
@@ -68,6 +71,43 @@ sub _collect_critic_data {
     foreach ( @critic_data ) {
         $stmt->execute( $module, $_->[0], $_->[1] );
     }
+
+    return;
+}
+
+=head2 _collect_git_data
+
+=cut
+
+sub _collect_git_data {
+    my ( $file, $module, $gitlib ) = @_;
+
+    # store _where I am_
+    my $cwd = getcwd();
+
+    chdir( $gitlib );
+    my $gitdir = cwd;
+    my ( $gitlog, $stderr, $exit ) = capture {system(
+        "git", 
+        "log", 
+        "--pretty=format: %h %ad %s | %an", 
+        "--date=short", 
+        "-30", 
+        "--graph", 
+        "--all", 
+        $file
+    ) };
+
+    my $query = "insert into gitlog (module, log) values(?, ? )";
+    my $stmt  = $dbh->prepare( $query );
+    $stmt->execute( 
+        $module, 
+        $gitlog
+    );
+
+    # reset our location
+    chdir( $cwd );
+
 
     return;
 }

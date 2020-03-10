@@ -235,6 +235,15 @@
         </table>
     </div>
 </div>
+<div id="git" class="container perl-data" style="padding-top:70px; display:none;">
+	<div>
+        <h2><span style="border-bottom:4px solid lightblue; margin-bottom:50px;"><%= $module %></span></h2>
+	</div>
+	<div>
+        <h2><span style="border-bottom:3px solid lightblue; margin-bottom:50px;">Git Log (last 30)</span></h2>
+	</div>
+	<div style="white-space: pre-wrap; font-family:'Courier New'; font-size:18px; font-weight:600; background-color:#eceff1; padding: 10px;margin-bottom:20px;"><%== $gitlog %></div>
+</div>
 
 <script>
   var scroll = new SmoothScroll('a[href*="#"]', {
@@ -252,6 +261,7 @@
 		+ '<li class="tab"><a id="pod-link" href="#" class="menu-active" style="font-size:22px">Pod</a></li>'
 		+ '<li class="tab"><a id="info-link"href="#" style="font-size:22px">Info</a></li>'
 		+ '<li class="tab"><a id="critic-link" href="#" style="font-size:22px">Critic</a></li>'
+		+ '<li class="tab"><a id="git-link" href="#" style="font-size:22px">GIT</a></li>'
 		+ '</ul>'
 		+ '</div>'
 		+ '</div>'
@@ -276,6 +286,13 @@
 		$('div.pod-menu').hide();
 		$('#critic-link').addClass('menu-active');
 		$('#critic').show();
+	});
+	$('#git-link').on('click', () => {
+		$('li.tab a').removeClass('menu-active');
+		$('.perl-data').hide();
+		$('div.pod-menu').hide();
+		$('#git-link').addClass('menu-active');
+		$('#git').show();
 	});
   });
 </script>
