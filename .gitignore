@@ -1,3 +1,5 @@
 critic.db
 script/filelib.conf
+script/modulelib.conf
+script/runlib.conf
 .DS_Store
