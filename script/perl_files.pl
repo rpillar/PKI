@@ -62,6 +62,8 @@ sub _collect_critic_data {
     my @issues = $critic->critique($file->stringify); 
 
     foreach ( @issues ) { 
+        #print("critic - source code : " . $_->source . "\n");
+        #print("critic - diagnostics : " . $_->diagnostics . "\n");
         push @critic_data, [ $_->description, $_->line_number ]; 
     }
 
