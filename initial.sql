@@ -3,3 +3,5 @@ CREATE TABLE summary(module text, max_complexity integer, lines integer, pod int
 CREATE TABLE critic(id integer primary key, module text, critic text, line_number integer);
 CREATE TABLE dependencies(id integer primary key, module text, dependencies text);
 CREATE TABLE inheritance(id integer primary key, module text, inheritance text);
+CREATE TABLE gitlog(module text, log text);
+CREATE TABLE gitcommits(date text, commits integer);

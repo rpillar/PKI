@@ -48,6 +48,8 @@ foreach ( @{ $config->get( 'libs' ) } ) {
         _collect_use_data( $module, $file );
         _collect_git_data( path($path)->parent->stringify, $module, $config->get( 'git' ) );
     }
+
+    _collect_git_commit_data( $config->get( 'git' ) );
 }
 
 =head2 _collect_critic_data
@@ -100,7 +102,7 @@ sub _collect_git_data {
         $file
     ) };
 
-    my $query = "insert into gitlog (module, log) values(?, ? )";
+    my $query = "insert into gitlog (module, log) values(?, ?)";
     my $stmt  = $dbh->prepare( $query );
     $stmt->execute( 
         $module, 
@@ -110,6 +112,39 @@ sub _collect_git_data {
     # reset our location
     chdir( $cwd );
 
+    return;
+}
+
+=head2 _collect_git_commit_data
+
+=cut
+
+sub _collect_git_commit_data {
+    my ( $gitlib ) = @_;
+
+    # store _where I am_
+    my $cwd = getcwd();
+
+    chdir( $gitlib );
+    my $gitdir = cwd;
+    my ( $git_commits, $stderr, $exit ) = capture {system(
+        "git log --date=short --pretty=format:%ad | sort | uniq -c" ) };
+
+    my $query = "insert into gitcommits (date, commits) values(?, ?)";
+    my $stmt  = $dbh->prepare( $query );
+
+    my @commits = split("\n", $git_commits);
+    foreach ( @commits ) {
+        $_ =~ s/^\s+//;
+        my ( $count, $date ) = split( " ", $_ );
+        $stmt->execute( 
+            $date, 
+            $count
+        );
+    }
+
+    # reset our location
+    chdir( $cwd );
 
     return;
 }
