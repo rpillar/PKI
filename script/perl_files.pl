@@ -8,6 +8,7 @@ use Config::JSON;
 use Cwd;
 use DDP;
 use DBI;
+use File::Basename;
 use JSON;
 use Path::Tiny;
 use Perl::Critic;
@@ -46,7 +47,9 @@ foreach ( @{ $config->get( 'libs' ) } ) {
         _collect_metrics_data( $module, $file, $pod_score );
         _collect_critic_data( $module, $file );
         _collect_use_data( $module, $file );
-        _collect_git_data( path($path)->parent->stringify, $module, $config->get( 'git' ) );
+        
+        my ( $filename, undef, undef ) = fileparse( $file );
+        _collect_git_data( path($path)->parent->stringify, $module, $filename, $config->get( 'git' ) );
     }
 
     _collect_git_commit_data( $config->get( 'git' ) );
@@ -84,10 +87,11 @@ sub _collect_critic_data {
 =cut
 
 sub _collect_git_data {
-    my ( $file, $module, $gitlib ) = @_;
+    my ( $file, $module, $filename, $gitlib ) = @_;
 
     # store _where I am_
     my $cwd = getcwd();
+    my $full_filename = $file . '/' . $filename;
 
     chdir( $gitlib );
     my $gitdir = cwd;
@@ -99,7 +103,7 @@ sub _collect_git_data {
         "-30", 
         "--graph", 
         "--all", 
-        $file
+        $full_filename
     ) };
 
     my $query = "insert into gitlog (module, log) values(?, ?)";
