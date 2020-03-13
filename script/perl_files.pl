@@ -295,6 +295,14 @@ sub _initialize {
     $stmt  = $dbh->prepare( $query );
     $stmt->execute();
 
+    $query = "delete from gitlog";
+    $stmt  = $dbh->prepare( $query );
+    $stmt->execute();
+
+    $query = "delete from gitcommits";
+    $stmt  = $dbh->prepare( $query );
+    $stmt->execute();
+
     return;
 }
 
