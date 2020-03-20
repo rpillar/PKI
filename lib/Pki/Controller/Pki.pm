@@ -10,7 +10,33 @@ use MetaCPAN::Pod::XHTML;
 use DBI;
 my $dbh = DBI->connect("dbi:SQLite:critic.db","","") or die "Could not connect";
 
+=head2 git_commit_stats
+
+=cut
+
+sub git_commit_stats {
+  my $self = shift;
+
+  my @data;
+  my $gitcommits_query = "select * from gitcommits where date > ?";
+  my $gitcommits_stmt = $dbh->prepare( $gitcommits_query );
+
+  $gitcommits_stmt->execute('2016-12-31');
+  while ( my $gitcommits_data = $gitcommits_stmt->fetchrow_hashref ) {
+    push @data, { 
+      date    => $gitcommits_data->{ date },
+      commits => $gitcommits_data->{ commits }
+    };
+  }
+
+  my $commits_data = { data => \@data };
+
+  $self->render(json => $commits_data);
+}
+
 =head2 pod
+
+Retrieve POD, dependency data, inheritance data and gitlog data - render template.
 
 =cut
 
@@ -94,7 +120,7 @@ sub summary {
       pod        => '/' . $summary_data->{ module } . '/' . $summary_data->{ pod },
       hierarchy  => "N",
       critic     => 'critic/' . $summary_data->{ module },
-    } 
+    }; 
   }
 
   my $table_data = { data => \@modules };

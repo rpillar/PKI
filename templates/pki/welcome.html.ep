@@ -50,39 +50,68 @@
     border-bottom: 3px solid red;
     padding: 0 0 4px;
   }
+  .menu-active {
+    	border-bottom: 3px solid #fff;
+    	padding: 0 0 4px;
+	}
 </style>
 
-<section>
-  <div style="padding-bottom:1rem;background-color:#263238;">
-    <div class="container">
-      <h2 style="color:#fff;margin:0 0;padding:20px 20px;">
-        Browse POD / check the quality of your code.
-      </h2>
+<section id="gitdata" class="section perl-data" style="padding-bottom: 1rem;">
+  <div>
+    <div class="container" style="padding-top:70px;">
+      <div>
+        <h2><span style="border-bottom:4px solid lightblue; margin-bottom:50px;">Git Statistics</span></h2>
+      </div>
+      <div><canvas id="myChart"></canvas></div
     </div>
   </div>
 </section>
 
-<section class="section" style="padding-bottom: 1rem;">
-    <div class="container">
-      <div>
-        <table id="module-list" class="striped row-border">
-          <thead style="background-color: #cf09ef00;">
-            <tr>
-              <th width="55%"><span style="border-bottom: 3px solid lightblue;">Module</span></th>
-              <th width="20%"><span style="border-bottom: 3px solid lightblue;">Lines/Subs</span></th>
-              <th width="20%"><span style="border-bottom: 3px solid lightblue;">Complexity</span></th>
-              <th width="10%"><span style="border-bottom: 3px solid lightblue;">Pod</span></th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody
-        </table>
-      </div>
+<section id="poddata" class="section perl-data" style="padding-bottom: 1rem; display:none;">
+  <div class="container" style="padding-top:70px;">
+    <div>
+      <table id="module-list" class="striped row-border" style="width:100%;">
+        <thead style="background-color: #cf09ef00;">
+          <tr>
+            <th width="55%"><span style="border-bottom: 3px solid lightblue;">Module</span></th>
+            <th width="20%"><span style="border-bottom: 3px solid lightblue;">Lines/Subs</span></th>
+            <th width="20%"><span style="border-bottom: 3px solid lightblue;">Complexity</span></th>
+            <th width="10%"><span style="border-bottom: 3px solid lightblue;">Pod</span></th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody
+      </table>
     </div>
+  </div>
 </section>
 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
 <script>
   $( document).ready(function() {
+    $('nav.nav-extended').append('<div class="nav-content" style="background-color: #263238;">'
+      + '<div class="container" style="padding:0 70px;">'
+      + '<ul class="tabs tabs-transparent">'
+      + '<li class="tab"><a id="gitdata-link" href="#" class="menu-active" style="font-size:22px">Git Data</a></li>'
+      + '<li class="tab"><a id="poddata-link"href="#" style="font-size:22px">Modules</a></li>'
+      + '</ul>'
+      + '</div>'
+		  + '</div>'
+	  );
+
+    $('#gitdata-link').on('click', () => {
+      $('li.tab a').removeClass('menu-active');
+      $('.perl-data').hide();
+      $('#gitdata-link').addClass('menu-active');
+      $('#gitdata').show();
+	  });
+    $('#poddata-link').on('click', () => {
+      $('li.tab a').removeClass('menu-active');
+      $('.perl-data').hide();
+      $('#poddata-link').addClass('menu-active');
+      $('#poddata').show();
+	  });
 
     $('#podname-button').on('click', function(e) {
       e.preventDefault;
@@ -127,5 +156,70 @@
     $('#module-list_filter label input').attr('placeholder', 'Enter text to filter table');
   });
 </script>
-<script type="text/javascript">
+
+<script>
+
+</script>
+<script>
+  buildChart();
+
+  async function buildChart() {
+    const data    = await fetchGitCommitStats();  
+    const ctx     = document.getElementById('myChart').getContext('2d'); 
+    const myChart = new Chart(ctx , {
+      type: 'bar',
+      data: {
+        labels: data.xlabels,
+        datasets:[
+          {
+            label: 'Git Commits',
+            data: data.ydata,
+            fill: false,
+            backgroundColor: '#616161',
+            borderColor: '#616161',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        scales: {
+          xAxes: [{
+            tickMarkLength: 15,
+            ticks: {
+              display: true,
+              fontStyle: 'oblique',
+              fontSize: 14,
+              fontColor: '#000',
+              stepSize: 50,
+              minRotation: 50
+            },
+            type: "time",
+            time: {
+              unit: 'month',
+              unitStepSize: 3,
+              displayFormats: { month: 'MM/YYYY' }
+            }
+          }]
+        }
+      }
+    })
+    console.log(data);
+  }
+
+  async function fetchGitCommitStats() {
+    const url = '/git_commit_stats';
+
+    const xlabels = [];
+    const ydata   = [];
+  
+    const response = await fetch(url);
+    const gitdata  = await response.json();
+
+    gitdata.data.forEach( element => {
+      xlabels.push(element.date);
+      ydata.push(element.commits);
+    } )
+
+    return { xlabels, ydata };
+  }
 </script>

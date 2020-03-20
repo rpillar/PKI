@@ -18,6 +18,7 @@ sub startup {
 
   # routes
   $r->get('/')->to(controller => 'pki', action => 'welcome');
+  $r->get('/git_commit_stats')->to(controller => 'pki', action => 'git_commit_stats');
   $r->get('/summary')->to(controller => 'pki', action => 'summary');
   $r->get('/pod/:module/:pod_score')->to(controller => 'pki', action => 'pod');
 }
