@@ -67,16 +67,14 @@ sub _collect_critic_data {
     my @issues = $critic->critique($file->stringify); 
 
     foreach ( @issues ) { 
-        #print("critic - source code : " . $_->source . "\n");
-        #print("critic - diagnostics : " . $_->diagnostics . "\n");
-        push @critic_data, [ $_->description, $_->line_number ]; 
+        push @critic_data, [ $_->description, $_->line_number, $_->source, $_->explanation ]; 
     }
 
-    my $query = "insert into critic (module, critic, line_number) values(?, ?, ?)";
+    my $query = "insert into critic (module, critic, line_number, source, explanation) values(?, ?, ?, ?, ?)";
     my $stmt  = $dbh->prepare( $query );
 
     foreach ( @critic_data ) {
-        $stmt->execute( $module, $_->[0], $_->[1] );
+        $stmt->execute( $module, $_->[0], $_->[1], $_->[2], $_->[3] );
     }
 
     return;

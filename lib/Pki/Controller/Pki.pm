@@ -10,6 +10,28 @@ use MetaCPAN::Pod::XHTML;
 use DBI;
 my $dbh = DBI->connect("dbi:SQLite:critic.db","","") or die "Could not connect";
 
+=head2 critic
+
+=cut
+
+sub critic {
+  my ( $self ) = @_;
+
+  my $module = $self->param( 'module' );
+  my @critics;
+
+  my $critic_query = "select module, critic, line_number, source, explanation from critic where module = ?";
+  my $critic_stmt  = $dbh->prepare( $critic_query );
+  $critic_stmt->execute( $module );
+  while ( my ( $module, $critic, $line_number, $source, $explanation ) = $critic_stmt->fetchrow_array ) {
+    push @critics, { line_number => $line_number, critic => $critic, source => $source, explanation => $explanation };
+  }
+
+  my $critic_data = { data => \@critics };
+
+  $self->render(json => $critic_data);
+}
+
 =head2 git_commit_stats
 
 =cut
@@ -82,7 +104,6 @@ sub pod {
   }
 
   my ( $dependency_data, $inheritance_data ) = $self->_info( $module );
-  my $critics                                = $self->_critic( $module );
   my $gitlog                                 = $self->_gitlog( $module );
 
   # Render template "pki/pod.html.ep" with pod output
@@ -92,7 +113,6 @@ sub pod {
     pod_score    => $pod_score,
     dependencies => $dependency_data, 
     inheritance  => $inheritance_data,
-    critics      => $critics,
     gitlog       => $gitlog
   );
 }
@@ -140,22 +160,6 @@ sub welcome {
 }
 
 # utility methods
-
-sub _critic {
-  my ( $self, $module ) = @_;
-
-  $self->app->log->debug($module);
-  my ( @critics, @dependencies );
-
-  my $critic_query = "select module, critic, line_number from critic where module = ?";
-  my $critic_stmt  = $dbh->prepare( $critic_query );
-  $critic_stmt->execute( $module );
-  while ( my ( $module, $critic, $line_number ) = $critic_stmt->fetchrow_array ) {
-    push @critics, { line_number => $line_number, critic => $critic };
-  }
-
-  return \@critics;
-}
 
 sub _gitlog {
   my ( $self, $module ) = @_;

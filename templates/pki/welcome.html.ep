@@ -24,9 +24,9 @@
   .dataTables_info {
     margin-bottom: 10px;
   }
-  table.striped>tbody>tr:nth-child(odd) {
+  /*table.striped>tbody>tr:nth-child(odd) {
 		background-color: #eceff1;
-	}
+	}*/
   #module-list_paginate a.paginate_button {
     text-decoration: none;
     background-color: #26a69a;
@@ -70,7 +70,7 @@
 <section id="poddata" class="section perl-data" style="padding-bottom: 1rem; display:none;">
   <div class="container" style="padding-top:70px;">
     <div>
-      <table id="module-list" class="striped row-border" style="width:100%;">
+      <table id="module-list" class="row-border" style="width:100%;">
         <thead style="background-color: #cf09ef00;">
           <tr>
             <th width="55%"><span style="border-bottom: 3px solid lightblue;">Module</span></th>
