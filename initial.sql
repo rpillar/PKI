@@ -1,6 +1,13 @@
+DROP TABLE IF EXISTS metrics;
+DROP TABLE IF EXISTS summary;
+DROP TABLE IF EXISTS critic;
+DROP TABLE IF EXISTS dependencies;
+DROP TABLE IF EXISTS inheritance;
+DROP TABLE IF EXISTS gitlog;
+DROP TABLE IF EXISTS gitcommits;
 CREATE TABLE metrics(module text, subname text, complexity integer, lines integer);
 CREATE TABLE summary(module text, max_complexity integer, lines integer, pod integer, avg_complexity integer, sub_count integer);
-CREATE TABLE critic(id integer primary key, module text, critic text, line_number integer);
+CREATE TABLE critic(id integer primary key, module text, critic text, line_number integer, source text, explanation text);
 CREATE TABLE dependencies(id integer primary key, module text, dependencies text);
 CREATE TABLE inheritance(id integer primary key, module text, inheritance text);
 CREATE TABLE gitlog(module text, log text);
