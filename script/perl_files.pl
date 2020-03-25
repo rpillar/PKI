@@ -98,7 +98,7 @@ sub _collect_git_data {
         "log", 
         "--pretty=format: %h %ad %s | %an", 
         "--date=short", 
-        "-30", 
+        "-20", 
         "--graph", 
         "--all", 
         $full_filename

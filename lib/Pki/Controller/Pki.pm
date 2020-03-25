@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Config::JSON;
 use Data::Printer;
+use DateTime;
 use JSON;
 use Pod::Simple::Search;
 use MetaCPAN::Pod::XHTML;
@@ -40,10 +41,12 @@ sub git_commit_stats {
   my $self = shift;
 
   my @data;
-  my $gitcommits_query = "select * from gitcommits where date > ?";
+  my $gitcommits_query = "select * from gitcommits where date >= ?";
   my $gitcommits_stmt = $dbh->prepare( $gitcommits_query );
 
-  $gitcommits_stmt->execute('2016-12-31');
+  my $date = DateTime->now();
+  my $start_year = $date->year - 1;
+  $gitcommits_stmt->execute( $start_year .'-01-01' );
   while ( my $gitcommits_data = $gitcommits_stmt->fetchrow_hashref ) {
     push @data, { 
       date    => $gitcommits_data->{ date },
