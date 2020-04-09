@@ -56,18 +56,18 @@
 	}
 </style>
 
-<section id="gitdata" class="section perl-data" style="padding-bottom: 1rem;">
-  <div>
+<section id="gitdata" class="section perl-data" style="padding-bottom: 1rem; display:none;">
+  <!--<div>-->
     <div class="container" style="padding-top:70px;">
       <div>
         <h2><span style="border-bottom:4px solid lightblue; margin-bottom:50px;">Git Statistics</span></h2>
       </div>
-      <div><canvas id="myChart"></canvas></div
+      <div><canvas id="myChart"></canvas></div>
     </div>
-  </div>
+  <!--</div>-->
 </section>
 
-<section id="poddata" class="section perl-data" style="padding-bottom: 1rem; display:none;">
+<section id="poddata" class="section perl-data" style="padding-bottom: 1rem;">
   <div class="container" style="padding-top:70px;">
     <div>
       <table id="module-list" class="row-border" style="width:100%;">
@@ -93,8 +93,8 @@
     $('nav.nav-extended').append('<div class="nav-content" style="background-color: #263238;">'
       + '<div class="container" style="padding:0 70px;">'
       + '<ul class="tabs tabs-transparent">'
-      + '<li class="tab"><a id="gitdata-link" href="#" class="menu-active" style="font-size:22px">Git Data</a></li>'
-      + '<li class="tab"><a id="poddata-link"href="#" style="font-size:22px">Modules</a></li>'
+      + '<li class="tab"><a id="poddata-link"href="#" class="menu-active" style="font-size:22px">Modules</a></li>'
+      + '<li class="tab"><a id="gitdata-link" href="#" style="font-size:22px">Git Stats</a></li>'
       + '</ul>'
       + '</div>'
 		  + '</div>'
