@@ -149,7 +149,8 @@
               $(nTd).html("<a href='/pod"+oData.pod+"'><i class='small material-icons' style='color:#009688;'>book</i></a>");
             }
           }
-        ]
+        ],
+        "deferRender": true
       }
     );
 
