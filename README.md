@@ -21,3 +21,7 @@ To run the app - at the command line :-
 ```
 > morbo -l http://localhost:3020 ./script/pki
 ```
+
+# Updates
+Add code to process roles - *with*
+Collect and display info about a where a module is used.
