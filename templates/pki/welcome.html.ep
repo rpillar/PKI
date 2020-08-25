@@ -2,6 +2,14 @@
 % title 'Welcome';
 
 <style>
+  table {
+    margin: 0 auto;
+    width: 100%;
+    clear: both;
+    border-collapse: collapse;
+    table-layout: fixed;
+    word-wrap:break-word;
+  }
   table tr {
     line-height: 1.25;
   }
@@ -73,10 +81,10 @@
       <table id="module-list" class="row-border" style="width:100%;">
         <thead style="background-color: #cf09ef00;">
           <tr>
-            <th width="55%"><span style="border-bottom: 3px solid lightblue;">Module</span></th>
-            <th width="20%"><span style="border-bottom: 3px solid lightblue;">Lines/Subs</span></th>
-            <th width="20%"><span style="border-bottom: 3px solid lightblue;">Complexity</span></th>
-            <th width="10%"><span style="border-bottom: 3px solid lightblue;">Pod</span></th>
+            <th><span style="border-bottom: 3px solid lightblue;">Module</span></th>
+            <th><span style="border-bottom: 3px solid lightblue;">Lines/Subs</span></th>
+            <th><span style="border-bottom: 3px solid lightblue;">Complexity</span></th>
+            <th><span style="border-bottom: 3px solid lightblue;">Pod</span></th>
           </tr>
         </thead>
         <tbody>
@@ -128,11 +136,12 @@
           "url": "/summary"
         },
         "columns": [
-          { "data": "module" },
+          { "data": "module", "width": "55%" },
           { "data": "lines", "name": "lines",
             fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
                 $(nTd).html("<span>"+oData.lines+' / '+oData.subs+"</span>");
-            }
+            },
+            "width": "20%"
           },
           { "data": "max_complexity", "name": "max_complexity",
             fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
@@ -142,12 +151,14 @@
               else {
                 $(nTd).html("<span>"+oData.max_complexity+' / '+oData.avg_complexity+"</span>");
               }
-            }
+            },
+            "width": "20%"
           },
           { "data": "pod", "name": "pod",
             fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
               $(nTd).html("<a href='/pod"+oData.pod+"'><i class='small material-icons' style='color:#009688;'>book</i></a>");
-            }
+            },
+            "width": "10%"
           }
         ],
         "deferRender": true
