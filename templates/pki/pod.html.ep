@@ -2,10 +2,10 @@
 % title 'POD Viewer';
 <style>
 	h2 {
-		font-size: 3rem;
+		font-size: 2.5rem;
 	}
 	p {
-		font-size: 16px;
+		font-size: 14px;
 	}
 	.sidenav {
 		background-color: #263238;
@@ -109,6 +109,11 @@
 		text-underline-position: under;
 		text-decoration-color: lightblue;
 	}
+	#PROPERTIES {
+		text-decoration: underline;
+		text-underline-position: under;
+		text-decoration-color: lightblue;
+	}
 	#SEE-ALSO {
 		text-decoration: underline;
 		text-underline-position: under;
@@ -139,7 +144,7 @@
     	outline: none;
   	}
   	td {
-    	font-size: 1.3rem;
+    	font-size: 1.2rem;
     	padding:12px 5px;
     	font-weight: 600;
   	}
@@ -215,13 +220,18 @@
     <div>
         <h2><span style="border-bottom:3px solid lightblue;">Dependencies</span></h2>
         <ul class="collection">
-          % foreach my $dependency (@$dependencies) {
-            <li class="collection-item"><a href="/pod/<%= $dependency %>/0"><%= $dependency %></a></li>
-          % }
+		  % if ( scalar @$dependencies ) {
+          	% foreach my $dependency (@$dependencies) {
+            	<li class="collection-item"><a href="/pod/<%= $dependency %>/0"><%= $dependency %></a></li>
+          	% }
+		  % }
+		  % else {
+			  <p style="font-size:22px;padding-left:10px;">No Dependencies found.</p>
+		  % }
         </ul>
     </div>
 </div>
-<div id="critic" class="container perl-data" style="padding-top:70px; display:none;">
+<div id="critic" class="container perl-data" style="padding-top:70px; padding-bottom:20px; display:none;">
 	<div>
         <h2><span id="critic-module-name" style="border-bottom:4px solid lightblue;" data-module="<%= $module %>"><%= $module %></span></h2>
     </div>
