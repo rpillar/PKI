@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use App::PrereqGrapher;
 use Capture::Tiny ':all';
 use Config::JSON;
 use Cwd;
@@ -16,10 +17,20 @@ use Perl::Metrics::Simple;
 use Pod::Simple::Search;
 use Safe;
 
+my $initialize = 0;
+
+GetOptions(
+    'initialize' => \$initialize,
+);
+
 my $dbh = DBI->connect("dbi:SQLite:critic.db","","") or die "Could not connect";
 
 # initialize the environment
-_initialize();
+if ( $initialize ) {
+    print( '**** PKI - initializing Database ****' . "\n" );
+    print( '**** all existing data will be removed ****' . "\n" );
+    _initialize_data();
+}
 
 my $analyzer = Perl::Metrics::Simple->new;
 my $libs;
@@ -42,18 +53,26 @@ foreach ( @{ $config->get( 'libs' ) } ) {
         my $module;
         ( $module = $file ) =~ s/(^.+\/lib\/|\.pm$)//g;
         $module =~ s/\//::/g;
-    
+        $module =~ s/^:://g;
+
+        my ( $filename, undef, undef ) = fileparse( $file );
+        if ( _collect_git_data( path($path)->parent->stringify, $module, $filename, $config->get( 'git' ) ) ) {
+            next;
+        }
+
+        $module_count++;
+
         my $pod_score = _collect_pod_data( $module, $file );
         _collect_metrics_data( $module, $file, $pod_score );
         _collect_critic_data( $module, $file );
         _collect_use_data( $module, $file );
-        
-        my ( $filename, undef, undef ) = fileparse( $file );
-        _collect_git_data( path($path)->parent->stringify, $module, $filename, $config->get( 'git' ) );
     }
 
     _collect_git_commit_data( $config->get( 'git' ) );
 }
+
+print( '## ' . $0 . ' has completed.' . "\n" );
+print( '## modules processed : ' .  $module_count . "\n\n" );
 
 =head2 _collect_critic_data
 
@@ -104,17 +123,37 @@ sub _collect_git_data {
         $full_filename
     ) };
 
-    my $query = "insert into gitlog (module, log) values(?, ?)";
+    my $latest_git_commit_data;
+    ( $latest_git_commit_data, $stderr, $exit ) = capture {system(
+        "git log -n1 --oneline " . $full_filename) };
+    my ( $latest_git_commit_sha, $commit_description ) = split(' ', $latest_git_commit_data );
+
+    my $query = "select latest_commit_sha from gitlog where module = ?";
     my $stmt  = $dbh->prepare( $query );
-    $stmt->execute( 
-        $module, 
+    $stmt->execute(
+        $module
+    );
+    my ( $git_sha ) = $stmt->fetchrow_array;
+
+    $query = "insert into gitlog (module, latest_commit_sha, log) values(?, ?, ?)";
+    $stmt  = $dbh->prepare( $query );
+    unless ( $initialize ) {
+        if ( $git_sha and $git_sha eq $latest_git_commit_sha ) {
+            return 1;
+        }
+    }
+
+    print( '## updating data for : ' . $module . "\n" );
+    $stmt->execute(
+        $module,
+        $latest_git_commit_sha,
         $gitlog
     );
 
     # reset our location
     chdir( $cwd );
 
-    return;
+    return 0;
 }
 
 =head2 _collect_git_commit_data
@@ -186,6 +225,32 @@ sub _collect_metrics_data {
     return;
 }
 
+=head2 _collect_module_hierarchy_data
+
+=cut
+
+sub _collect_module_hierarchy_data {
+    my ( $module, $file ) = @_;
+
+    my ( $git_commits, $stderr, $exit ) = capture {system(
+        "git log --date=short --pretty=format:%ad | sort | uniq -c" ) };
+
+    my $query = "insert into gitcommits (date, commits) values(?, ?)";
+    my $stmt  = $dbh->prepare( $query );
+
+    my @commits = split("\n", $git_commits);
+    foreach ( @commits ) {
+        $_ =~ s/^\s+//;
+        my ( $count, $date ) = split( " ", $_ );
+        $stmt->execute(
+            $date,
+            $count
+        );
+    }
+
+    return;
+}
+
 =head2 _collect_pod_data
 
 Returns a 1 / 0 depending on whether the B<file> contains POD
@@ -237,12 +302,13 @@ sub _collect_use_data {
 
         _parse_package( $file_data, $_ );
         
-        # skip lines which are not belong to package namespace
+        # skip lines which do not belong to package namespace
         next if !$file_data->{'curr_pkg'};
         
         # append current line to package source
         $file_data->{'source'}->{$file_data->{'curr_pkg'}} .= $_ . "\n";
 
+        ## - all commented out for now - will be revisted ...
         # count non-empty lines
         #$self->count_package_lines($_);
         
@@ -270,13 +336,46 @@ sub _collect_use_data {
     return $file_data->{'data'};
 }
 
-=head2 _initialize
+=head2 _get_latest_commit
+
+=cut
+
+sub _get_latest_commit {
+    my ( $file, $module, $filename, $gitlib ) = @_;
+
+    # store _where I am_
+    my $cwd = getcwd();
+    my $full_filename = $file . '/' . $filename;
+
+    chdir( $gitlib );
+    my $gitdir = cwd;
+    my ( $latest_git_commit_sha, $stderr, $exit ) = capture {system(
+        "git log -n1 --oneline " . $full_filename . " | awk '{print $1;}'" ) };
+
+    # have I got a more recent commit ....
+    my $status = 0;
+    my $query = "select latest_commit_sha from gitlog where module = ?";
+    my $stmt  = $dbh->prepare( $query );
+    $stmt->execute( $module );
+    my ( $git_sha ) = $stmt->fetchrow_array;
+
+    if ( $git_sha eq $latest_git_commit_sha ) {
+        $status = 1;
+    }
+
+    # reset our location
+    chdir( $cwd );
+
+    return $status;
+}
+
+=head2 _initialize_data
 
 Reset everything before scanning the specified repos
 
 =cut
 
-sub _initialize {
+sub _initialize_data {
     my $query = "delete from critic";
     my $stmt  = $dbh->prepare( $query );
     $stmt->execute();
