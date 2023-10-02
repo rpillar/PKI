@@ -10,6 +10,7 @@ use Cwd;
 use DDP;
 use DBI;
 use File::Basename;
+use Getopt::Long;
 use JSON;
 use Path::Tiny;
 use Perl::Critic;
@@ -38,9 +39,10 @@ my $libs;
 # try to import every .pm file in /lib
 my $config = Config::JSON->new("./script/modulelib.conf");
 
+my $module_count = 0;
 foreach ( @{ $config->get( 'libs' ) } ) {
-    my $path = $_;
-    my $dir = path($path);
+    my $dpath = $_;
+    my $dir = path($dpath);
     my $iter = $dir->iterator({
         recurse         => 1,
         follow_symlinks => 0,

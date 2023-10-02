@@ -46,6 +46,7 @@ CREATE TABLE inheritance(
 CREATE INDEX idx_inheritance_module ON inheritance (module);
 CREATE TABLE gitlog(
     module text, 
+    latest_commit_sha text,
     log text
 );
 CREATE INDEX idx_gitlog_module ON gitlog (module);
