@@ -78,7 +78,7 @@
 <section id="poddata" class="section perl-data" style="padding-bottom: 1rem;">
   <div class="container" style="padding-top:70px;">
     <div>
-      <table id="module-list" class="row-border" style="width:100%;">
+      <table id="module-list" class="row-border stripe" style="width:100%;">
         <thead style="background-color: #cf09ef00;">
           <tr>
             <th><span style="border-bottom: 3px solid lightblue;">Module</span></th>

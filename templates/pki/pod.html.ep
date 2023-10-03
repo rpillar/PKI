@@ -237,7 +237,7 @@
     </div>
 	<div>
         <h2><span style="border-bottom:3px solid lightblue;">Perl Critic</span></h2>
-        <table id="critic-list" style="100%;word-wrap:break-word;">
+        <table id="critic-list" class="stripe" style="100%;word-wrap:break-word;">
           <thead style="background-color: #cf09ef00;">
             <tr>
 			  <th width="50"></th>
