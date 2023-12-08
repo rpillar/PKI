@@ -9,6 +9,4 @@ digraph GRAPH_0 {
     fontsize=11,
     shape=box,
     style=filled ];
-
-
 }
