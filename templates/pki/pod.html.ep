@@ -5,7 +5,7 @@
 		font-size: 2.5rem;
 	}
 	p {
-		font-size: 14px;
+		font-size: 18px;
 	}
 	.sidenav {
 		background-color: #263238;
@@ -217,19 +217,26 @@
           </ul>
         </div>
     % }
-    <div>
-        <h2><span style="border-bottom:3px solid lightblue;">Dependencies</span></h2>
-        <ul class="collection">
-		  % if ( scalar @$dependencies ) {
-          	% foreach my $dependency (@$dependencies) {
-            	<li class="collection-item"><a href="/pod/<%= $dependency %>/0"><%= $dependency %></a></li>
-          	% }
-		  % }
-		  % else {
-			  <p style="font-size:22px;padding-left:10px;">No Dependencies found.</p>
-		  % }
-        </ul>
-    </div>
+	% if (@$role) {
+    	<div>
+          <h2><span style="border-bottom:2px solid lightblue;">Roles</span></h2>
+          <ul class="collection">
+            % foreach my $role (@$role) {
+              <li class="collection-item"><a href="/pod/<%= $role %>/0"><%= $role %></a></li>
+            % }
+          </ul>
+        </div>
+    % }
+	% if (@$dependencies) {
+    	<div>
+        	<h2><span style="border-bottom:3px solid lightblue;">Dependencies</span></h2>
+        	<ul class="collection">
+          		% foreach my $dependency (@$dependencies) {
+            		<li class="collection-item"><a href="/pod/<%= $dependency %>/0"><%= $dependency %></a></li>
+          		% }
+        	</ul>
+    	</div>
+	% }
 </div>
 <div id="critic" class="container perl-data" style="padding-top:70px; padding-bottom:20px; display:none;">
 	<div>

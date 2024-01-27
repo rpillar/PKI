@@ -227,11 +227,13 @@ sub _collect_metrics_data {
     return;
 }
 
-=head2 _collect_module_hierarchy_data
+=head2 _collect_gitlog_data
+
+Not used currently
 
 =cut
 
-sub _collect_module_hierarchy_data {
+sub _collect_gitlog_data {
     my ( $module, $file ) = @_;
 
     my ( $git_commits, $stderr, $exit ) = capture {system(
@@ -325,7 +327,10 @@ sub _collect_use_data {
     close $fh;
 
     my $dependencies = $file_data->{data}->{$module}->{depends_on};
+    print("### dependencies : \n");
+    p $dependencies;
     my $inheritance  = $file_data->{data}->{$module}->{parent};
+    my $role         = $file_data->{data}->{$module}->{role};
 
     my $query = "insert into dependencies (module, dependencies) values(?, ?)";
     my $stmt  = $dbh->prepare( $query );
@@ -334,6 +339,11 @@ sub _collect_use_data {
     $query = "insert into inheritance (module, inheritance) values(?, ?)";
     $stmt  = $dbh->prepare( $query );
     $stmt->execute( $module, encode_json($inheritance) );
+
+    $query = "insert into role (module, role) values(?, ?)";
+    $stmt  = $dbh->prepare( $query );
+#    $role = ( defined $role ? encode_json( $role ) : "[]" ); # set default if not defined ...
+    $stmt->execute( $module, encode_json($role) );
 
     return $file_data->{'data'};
 }
@@ -398,6 +408,10 @@ sub _initialize_data {
     $stmt  = $dbh->prepare( $query );
     $stmt->execute();
 
+    $query = "delete from role";
+    $stmt  = $dbh->prepare( $query );
+    $stmt->execute();
+
     $query = "delete from gitlog";
     $stmt  = $dbh->prepare( $query );
     $stmt->execute();
@@ -409,36 +423,56 @@ sub _initialize_data {
     return;
 }
 
-=head2 _parse_dependencies
+=head2 dependencies
 
 =cut
 
 sub _parse_dependencies {
     my ($file_data, $line) = @_;
-    
+
+    # ignore 'use lib' lines
+    if ( $line =~ m/use\s+lib.+/ ) {
+        return $file_data;
+    }
+
+    # ignore perl 'version' lines
+    if ( $line =~ m/use\s*.*5/ ) {
+        return $file_data;
+    }
+
     # need to process 'use parent *****' in DBIX resultset classes.
     if ( $line =~ m/^\s*use\s+([\w\:]+)/ ) {
-        if ( $1 ne "strict" and $1 ne "warnings" and $1 ne "parent" and $1 ne 'base' and $1 ne 'namespace::autoclean') {
+        if ( $1 ne "strict" and 
+          $1 ne "warnings" and 
+          $1 ne "parent" and 
+          $1 ne 'base' and 
+          $1 ne 'namespace::autoclean' and 
+          $1 ne 'feature' and
+          $1 ne 'lib' and
+          $1 !~ m/5\.+/ ) {
             $file_data = _util_dpush($file_data, 'depends_on', $1);
+            return $file_data;
         }
     }
-    if ( $line =~ m/^\s*use\s+([\w\:]+)\s(\S+)/ ) {
-        if ( $1 eq 'parent' or $1 eq 'base' ) {
-            my $file = $2;
-            $file =~ s/\'|\;//g;
-            $file_data = _util_dpush($file_data, 'depends_on', $file);
-        }
+   
+    if ( $line =~ /^\s*use\s(?:base|parent)\s(.+)/ ) {
+        my $file = $1;
+        $file =~ s/qw|\/|\\|["';()]|\s//g;
+        $file_data = _util_dpush($file_data, 'depends_on', $file);
+        return $file_data;
     }
 
     if ($line =~ m/^\s*require\s+([^\s;]+)/) { # "require Bar;" or "require 'Foo/Bar.pm' if $wibble;'
         my $required = $1;
         if ($required =~ m/^([\w\:]+)$/) {
             $file_data = _util_dpush($file_data, 'depends_on', $required);
+            return $file_data;
         }
         elsif ($required =~ m/^["'](.*?\.pm)["']$/) { # simple Foo/Bar.pm case
             ($required = $1) =~ s/\.pm$//;
             $required =~ s!/!::!g;
             $file_data = _util_dpush($file_data, 'depends_on', $required);
+            return $file_data;
         }
         else {
             warn "Can't interpret $line at line $. in $file_data->{file}\n"
@@ -465,7 +499,8 @@ sub _parse_inheritance {
         $list =~ s/[\r\n]//;
         while ( $list !~ /;\s*$/ && ( $_ = <$fh> ) ) {
             s/\s+#.*//; # remove any comments
-            s/[\r\n]//; # remove line endings
+            s/[\r\n]//g; # remove line endings / quoting etc.
+            s/qw|\/|\s//g;
             $list .= $_;
         }
         $list =~ s/;\s*$//;
@@ -483,6 +518,15 @@ sub _parse_inheritance {
         my (@mods) = Safe->new()->reval($list);
         foreach my $mod (@mods) {
             $file_data = _util_dpush($file_data, 'parent', $mod);
+        }
+    }
+
+    if ($line =~ m/^with\s+(.*)/ ) {
+        ( my $list = $1 ) =~ s/\s+\#.*//;
+        $list =~ s/[\r\n]//;
+        my (@mods) = Safe->new()->reval($list);
+        foreach my $mod (@mods) {
+            $file_data = _util_dpush($file_data, 'role', $mod);
         }
     }
 
@@ -516,6 +560,7 @@ sub _parse_package {
             'line_count'       => 0,
             'depends_on'       => [],
             'parent'           => [],
+            'role'             => [],
             'methods'          => [],
             'methods_super'    => [],
             'methods_used'     => {},

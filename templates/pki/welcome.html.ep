@@ -70,7 +70,8 @@
       <div>
         <h2><span style="border-bottom:4px solid lightblue; margin-bottom:50px;">Git Statistics</span></h2>
       </div>
-      <div><canvas id="myChart"></canvas></div>
+      <!--<div><canvas id="myChart"></canvas></div>-->
+      <div><h4 style="margin-top: 50px;">Under construction .......</h4></div>
     </div>
   <!--</div>-->
 </section>

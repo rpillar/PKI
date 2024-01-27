@@ -107,8 +107,8 @@ sub pod {
     $output =~ s/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>/;
   }
 
-  my ( $dependency_data, $inheritance_data ) = $self->_info( $module );
-  my $gitlog                                 = $self->_gitlog( $module );
+  my ( $dependency_data, $inheritance_data, $role_data ) = $self->_info( $module );
+  my $gitlog                                             = $self->_gitlog( $module );
 
   # Render template "pki/pod.html.ep" with pod output
   $self->render(
@@ -117,6 +117,7 @@ sub pod {
     pod_score    => $pod_score,
     dependencies => $dependency_data, 
     inheritance  => $inheritance_data,
+    role         => $role_data,
     gitlog       => $gitlog
   );
 }
@@ -196,7 +197,14 @@ sub _info {
   my ( $inheritance_module, $inheritance_jsondata ) = $inheritance_stmt->fetchrow_array;
   my $inheritance_data                              = decode_json( $inheritance_jsondata );
 
-  return ( $dependency_data, $inheritance_data );
+  # get role data
+  my $role_query = "select module, role from role where module = ?";
+  my $role_stmt  = $dbh->prepare( $role_query );
+  $role_stmt->execute( $module );
+  my ( $role_module, $role_jsondata ) = $role_stmt->fetchrow_array;
+  my $role_data                       = decode_json( $role_jsondata );
+
+  return ( $dependency_data, $inheritance_data, $role_data );
 }
 
 1;
