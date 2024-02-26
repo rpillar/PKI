@@ -8,6 +8,7 @@ The parsing of the modules to pull out inheritance / dependency data is based on
 To initialize the database (sqlite) start sqlite - `sqlite3 critic.db` - and at the sqlite prompt run - `.read initial.sql`. 
 
 The config file - `./script/modulelib.conf` - holds the full path to libraries that are parsed during the runnning of the `perl_files.pl` script. When the app is running the possible location of the modules that are parsed for POD may be different - use `./script/runlib.conf` to ensure that (if there are differences) these are picked up.
+As an example of this difference - for the Dancer web framework the git data would be downloaded from https://github.com/PerlDancer/Dancer.git and the source code (for POD) is downloaded from CPAN (https://metacpan.org/pod/Dancer).
 
 Install any requested / missing modules using `cpanm`.
 
