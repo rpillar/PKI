@@ -11,6 +11,23 @@ The config file - `./script/modulelib.conf` - holds the full path to libraries t
 
 As an example of this difference - for the Dancer web framework the git data would be downloaded from https://github.com/PerlDancer/Dancer.git and the source code (for POD) is downloaded from CPAN (https://metacpan.org/pod/Dancer).
 
+## `./script/modulelib.conf`
+
+```
+{
+    "libs":  [ "<full path to /lib - add as many as you want>" ],
+    "git": "<full path to the 'base' of your 'local' git repo>"
+}
+```
+
+## `./script/runlib.conf`
+
+```
+{
+    "libs":  [ "<full path to /lib - add as many as you want>" ]
+}
+```
+
 Install any requested / missing modules using `cpanm`.
 
 # To run
