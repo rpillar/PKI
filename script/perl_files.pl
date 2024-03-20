@@ -206,14 +206,12 @@ sub _collect_metrics_data {
     my $stmt  = $dbh->prepare( $query );
 
     foreach ( @{ $analysis->subs } ) {
-        if ( $_->{ mccabe_complexity } > 10 ) {
-            $stmt->execute( $module, $_->{ name }, $_->{ mccabe_complexity }, $_->{ lines } );
-        }
+        $stmt->execute( $module, $_->{ name }, $_->{ mccabe_complexity }, $_->{ lines } );
     }
 
     my $summary = $analysis->summary_stats;
     my $lines   = $analysis->lines;
-    $query = "insert into summary (module, avg_complexity, max_complexity, lines, pod, sub_count) values(?, ?, ?, ?, ?, ?)";
+    $query = "insert into summary (module, avg_complexity, max_complexity, lines, pod, sub_count, jsondata) values(?, ?, ?, ?, ?, ?, ?)";
     $stmt  = $dbh->prepare( $query );
     $stmt->execute( 
         $module, 
@@ -221,7 +219,8 @@ sub _collect_metrics_data {
         $summary->{ sub_complexity }->{ max }, 
         $lines || 0, 
         $pod_score || 0,
-        $analysis->sub_count()
+        $analysis->sub_count(),
+        ''
     );
 
     return;
@@ -327,8 +326,6 @@ sub _collect_use_data {
     close $fh;
 
     my $dependencies = $file_data->{data}->{$module}->{depends_on};
-    print("### dependencies : \n");
-    p $dependencies;
     my $inheritance  = $file_data->{data}->{$module}->{parent};
     my $role         = $file_data->{data}->{$module}->{role};
 
@@ -342,7 +339,6 @@ sub _collect_use_data {
 
     $query = "insert into role (module, role) values(?, ?)";
     $stmt  = $dbh->prepare( $query );
-#    $role = ( defined $role ? encode_json( $role ) : "[]" ); # set default if not defined ...
     $stmt->execute( $module, encode_json($role) );
 
     return $file_data->{'data'};
@@ -450,6 +446,9 @@ sub _parse_dependencies {
           $1 ne 'feature' and
           $1 ne 'lib' and
           $1 !~ m/5\.+/ ) {
+print("module dependency ....\n");
+p $file_data->{curr_pkg};
+p $1;
             $file_data = _util_dpush($file_data, 'depends_on', $1);
             return $file_data;
         }

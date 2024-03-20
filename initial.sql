@@ -20,7 +20,8 @@ CREATE TABLE summary(
     lines integer, 
     pod integer, 
     avg_complexity integer, 
-    sub_count integer
+    sub_count integer,
+    jsondata text
 );
 CREATE INDEX idx_summary_module ON summary (module);
 CREATE TABLE critic(
