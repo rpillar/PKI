@@ -27,8 +27,22 @@ To run the app - at the command line :-
 ```
 
 # Updates
+ - refactor Controller code - introduce a *Service* layer that will contain the code to *get the data* - create 
+ a *thin* controller.
  - Add code to process roles - *with* / also *require*
- - Collect and display info about where a module is used.
+ - Collect and display info about where a module is used / add complexity scores and other info to the *INFO* tab.
  - Add module dependency graphs
  - Fix links within POD
  - Add flag so that interface / scripts *only* process source files - not GIT
+
+ # Further Notes
+
+ This code tries to provide a way of viewing information about the code base that is _pointed at_. If you would like to just see
+ the complexity scores using `Perl::Metrics::Simple` then :-
+ ```
+ use Perl::Metrics::Simple;
+ 
+ my $analyzer = Perl::Metrics::Simple->new;
+ ```
+
+

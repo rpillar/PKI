@@ -164,7 +164,11 @@ sub welcome {
   $self->render(template => 'pki/welcome');
 }
 
-# utility methods
+=head1 PRIVATE METHODS
+
+=head2 _gitlog
+
+=cut
 
 sub _gitlog {
   my ( $self, $module ) = @_;
@@ -179,6 +183,10 @@ sub _gitlog {
 
   return $gitlog_data;
 }
+
+=head2 _info
+
+=cut
 
 sub _info {
   my ( $self, $module ) = @_;

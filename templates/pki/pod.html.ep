@@ -217,6 +217,12 @@
           </ul>
         </div>
     % }
+	% else {
+		<div id="pod" class="container perl-data" style="padding-top:70px;">
+			<h2><span style="border-bottom:4px solid lightblue;"><%= $module %></span></h2>
+			<p style="font-size:22px;">This module has no inheritance data.</p>
+		</div>
+	% }
 	% if (@$role) {
     	<div>
           <h2><span style="border-bottom:2px solid lightblue;">Roles</span></h2>
@@ -236,6 +242,12 @@
           		% }
         	</ul>
     	</div>
+	% }
+	% else {
+		<div id="pod" class="container perl-data" style="padding-top:70px;">
+			<h2><span style="border-bottom:3px solid lightblue;">Dependencies</span></h2>
+			<p style="font-size:22px;">This module has no dependencies.</p>
+		</div>
 	% }
 </div>
 <div id="critic" class="container perl-data" style="padding-top:70px; padding-bottom:20px; display:none;">
@@ -289,29 +301,30 @@
 		+ '</div>'
 	);
 	$('#pod-link').on('click', () => {
-		$('li.tab a').removeClass();
+		$('li.tab a').removeClass('menu-active');
 		$('div.perl-data').hide();
 		$('div.pod-menu').show();
 		$('#pod-link').addClass('menu-active');
 		$('#pod').show();
 	});
 	$('#info-link').on('click', () => {
+		console.log('I clicked on the info-link');
 		$('li.tab a').removeClass('menu-active');
-		$('.perl-data').hide();
+		$('div.perl-data').hide();
 		$('div.pod-menu').hide();
 		$('#info-link').addClass('menu-active');
 		$('#info').show();
 	});
 	$('#critic-link').on('click', () => {
 		$('li.tab a').removeClass('menu-active');
-		$('.perl-data').hide();
+		$('div.perl-data').hide();
 		$('div.pod-menu').hide();
 		$('#critic-link').addClass('menu-active');
 		$('#critic').show();
 	});
 	$('#git-link').on('click', () => {
 		$('li.tab a').removeClass('menu-active');
-		$('.perl-data').hide();
+		$('div.perl-data').hide();
 		$('div.pod-menu').hide();
 		$('#git-link').addClass('menu-active');
 		$('#git').show();
