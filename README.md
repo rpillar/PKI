@@ -11,7 +11,7 @@ The config file - `./script/modulelib.conf` - holds the full path to libraries t
 
 As an example of this difference - for the Dancer web framework the git data would be downloaded from https://github.com/PerlDancer/Dancer.git and the source code (for POD) is downloaded from CPAN (https://metacpan.org/pod/Dancer).
 
-## `./script/modulelib.conf`
+### `./script/modulelib.conf`
 
 ```
 {
@@ -20,7 +20,7 @@ As an example of this difference - for the Dancer web framework the git data wou
 }
 ```
 
-## `./script/runlib.conf`
+### `./script/runlib.conf`
 
 ```
 {
@@ -47,7 +47,7 @@ To run the app - at the command line :-
  - refactor Controller code - introduce a *Service* layer that will contain the code to *get the data* - create 
  a *thin* controller.
  - Add code to process roles - *with* / also *require*
- - Collect and display info about where a module is used / add complexity scores and other info to the *INFO* tab.
+ - Collect and display info about where a module is used / add complexity scores and other info to the *INFO* tab. Maybe also add details of subroutines (and associated complexity).
  - Add module dependency graphs
  - Fix links within POD
  - Add flag so that interface / scripts *only* process source files - not GIT
