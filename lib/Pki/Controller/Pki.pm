@@ -107,7 +107,7 @@ sub pod {
     $output =~ s/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>/;
   }
 
-  my ( $dependency_data, $inheritance_data, $role_data ) = $self->_info( $module );
+  my ( $dependency_data, $inheritance_data, $role_data, $complexity_data, $summary_stats_data ) = $self->_info( $module );
   my $gitlog                                             = $self->_gitlog( $module );
 
   # Render template "pki/pod.html.ep" with pod output
@@ -118,6 +118,8 @@ sub pod {
     dependencies => $dependency_data, 
     inheritance  => $inheritance_data,
     role         => $role_data,
+    complexities => $complexity_data,
+    summary      => $summary_stats_data,
     gitlog       => $gitlog
   );
 }
@@ -212,7 +214,19 @@ sub _info {
   my ( $role_module, $role_jsondata ) = $role_stmt->fetchrow_array;
   my $role_data                       = decode_json( $role_jsondata );
 
-  return ( $dependency_data, $inheritance_data, $role_data );
+  # get complexity data (subroutine)
+  my $complexity_query = "select subname, complexity, lines from metrics where module = ? order by complexity desc limit 5";
+  my $complexity_stmt  = $dbh->prepare( $complexity_query );
+  $complexity_stmt->execute( $module );
+  my $complexity_data = $complexity_stmt->fetchall_arrayref( {} );
+
+  # get summary stats
+  my $summary_stats_query = "select * from summary where module = ?";
+  my $summary_stats_stmt  = $dbh->prepare( $summary_stats_query );
+  $summary_stats_stmt->execute( $module );
+  my $summary_stats_data = $summary_stats_stmt->fetchrow_hashref();
+
+  return ( $dependency_data, $inheritance_data, $role_data, $complexity_data, $summary_stats_data );
 }
 
 1;

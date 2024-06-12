@@ -147,7 +147,7 @@
           { "data": "max_complexity", "name": "max_complexity",
             fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
               if ( oData.max_complexity > 10 ) {
-                $(nTd).html("<span class='complexity-high'>"+oData.max_complexity+' / '+oData.avg_complexity+"</span>");
+                $(nTd).html("<span style='background-color:#ef9a9a' class='complexity-high'>"+oData.max_complexity+' / '+oData.avg_complexity+"</span>");
               }
               else {
                 $(nTd).html("<span>"+oData.max_complexity+' / '+oData.avg_complexity+"</span>");

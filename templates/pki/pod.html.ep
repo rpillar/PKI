@@ -249,6 +249,56 @@
 			<p style="font-size:22px;">This module has no dependencies.</p>
 		</div>
 	% }
+	% if (@$complexities) {
+		<div style="margin-bottom:40px;">
+			<h2><span style="border-bottom:3px solid lightblue;">Complexity Metrics</span></h2>
+			<h4><span style="border-bottom:2px solid lightblue;">Summary</span></h4>
+			<table id="complexity-summary" class="stripe" style="100%;word-wrap:break-word;">
+          		<thead style="background-color: #cf09ef00;">
+            		<tr>
+			  			<th width="100">Number of Subroutines</th>
+						<th width="100">Number of Lines</th>
+              			<th width="80">Max Complexity</th>
+              			<th width="80">Avg Complexity</th>
+            		</tr>
+          		</thead>
+          		<tbody>
+					<tr>
+						<td><%= $summary->{sub_count} %></td>
+						<td><%= $summary->{lines} %></td>
+						<td><%= $summary->{max_complexity} %></td>
+						<td><%= $summary->{avg_complexity} %></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+    	<div>
+        	<h4><span style="border-bottom:2px solid lightblue;">Subroutine Complexity (Top 5 - by complexity)</span></h4>
+			<table id="subroutine-list" class="stripe" style="100%;word-wrap:break-word;">
+          		<thead style="background-color: #cf09ef00;">
+            		<tr>
+			  			<th width="150">Name</th>
+              			<th width="80">Number of Lines</th>
+              			<th width="80">Complexity</th>
+            		</tr>
+          		</thead>
+          		<tbody>
+					% foreach my $complexity (@$complexities) {
+						% if ($complexity->{ complexity } > 10) {
+						<tr style="background-color:#ef9a9a;">
+						% }
+						% else {
+						<tr>
+						% }
+							<td><%= $complexity->{ subname } %></td>
+							<td><%= $complexity->{ lines } %></td>
+							<td><%= $complexity->{ complexity } %></td>
+						</tr>
+					% }
+          		</tbody>
+        	</table>
+    	</div>
+	% }
 </div>
 <div id="critic" class="container perl-data" style="padding-top:70px; padding-bottom:20px; display:none;">
 	<div>
@@ -329,6 +379,8 @@
 		$('#git-link').addClass('menu-active');
 		$('#git').show();
 	});
+	
+	//('#subroutine-list').DataTable();
   });
 </script>
 
