@@ -74,11 +74,7 @@ sub pod {
   my $pod_score = $self->param( 'pod_score' );
 
   if ( not $pod_score ) {
-    my $summary_query = "select module, pod from summary where module = ?";
-    my $summary_stmt  = $dbh->prepare( $summary_query );
-    $summary_stmt->execute( $module );
-
-    my ( $is_our_module, $my_pod_score ) = $summary_stmt->fetchrow_array;
+    my ( $is_our_module, $my_pod_score ) = $self->_is_ours( $module );
     if ( not $is_our_module ) {
       return $self->res->code(301) && $self->redirect_to("https://metacpan.org/pod/$module");
     }
@@ -200,6 +196,11 @@ sub _info {
   my ( $module_name, $dependency_jsondata ) = $dependency_stmt->fetchrow_array;
   my $dependency_data                       = decode_json( $dependency_jsondata );
 
+  # check whether the dependencies are internal / external
+  my $dependency_hash;
+  foreach ( @{ $dependency_data }) {
+  }
+
   # get inheritance data
   my $inheritance_query = "select module, inheritance from inheritance where module = ?";
   my $inheritance_stmt  = $dbh->prepare( $inheritance_query );
@@ -227,6 +228,22 @@ sub _info {
   my $summary_stats_data = $summary_stats_stmt->fetchrow_hashref();
 
   return ( $dependency_data, $inheritance_data, $role_data, $complexity_data, $summary_stats_data );
+}
+
+=head2 _is_ours
+
+=cut
+
+sub _is_ours {
+  my ( $self, $module ) = @_;
+  
+  my $summary_query = "select module, pod from summary where module = ?";
+  my $summary_stmt  = $dbh->prepare( $summary_query );
+  $summary_stmt->execute( $module );
+
+  my ( $is_our_module, $my_pod_score ) = $summary_stmt->fetchrow_array;
+
+  return ( $is_our_module, $my_pod_score );
 }
 
 1;

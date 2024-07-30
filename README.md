@@ -47,10 +47,12 @@ To run the app - at the command line :-
  - refactor Controller code - introduce a *Service* layer that will contain the code to *get the data* - create 
  a *thin* controller.
  - Add code to process roles - *with* / also *require*
- - Collect and display info about where a module is used / add complexity scores and other info to the *INFO* tab. Maybe also add details of subroutines (and associated complexity).
+ - distinguish between internal / external dependencies
  - Add module dependency graphs
  - Fix links within POD
  - Add flag so that interface / scripts *only* process source files - not GIT
+ - Would it be possible - add a process that will analyse scripts for POD and allow the "user' to
+ document dependencies / tables used and updated etc. 
 
  # Further Notes
 

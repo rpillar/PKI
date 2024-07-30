@@ -446,9 +446,7 @@ sub _parse_dependencies {
           $1 ne 'feature' and
           $1 ne 'lib' and
           $1 !~ m/5\.+/ ) {
-print("module dependency ....\n");
-p $file_data->{curr_pkg};
-p $1;
+
             $file_data = _util_dpush($file_data, 'depends_on', $1);
             return $file_data;
         }

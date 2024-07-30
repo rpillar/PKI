@@ -85,7 +85,7 @@
             <th><span style="border-bottom: 3px solid lightblue;">Module</span></th>
             <th><span style="border-bottom: 3px solid lightblue;">Lines/Subs</span></th>
             <th><span style="border-bottom: 3px solid lightblue;">Complexity</span></th>
-            <th><span style="border-bottom: 3px solid lightblue;">Pod</span></th>
+            <th><span style="border-bottom: 3px solid lightblue;">Info</span></th>
           </tr>
         </thead>
         <tbody>
@@ -157,7 +157,7 @@
           },
           { "data": "pod", "name": "pod",
             fnCreatedCell: function(nTd, sData, oData, iRow, iCol) {
-              $(nTd).html("<a href='/pod"+oData.pod+"'><i class='small material-icons' style='color:#009688;'>book</i></a>");
+              $(nTd).html("<a href='/pod"+oData.pod+"'><i class='small material-icons' style='color:#009688;'>info</i></a>");
             },
             "width": "10%"
           }
