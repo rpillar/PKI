@@ -363,6 +363,7 @@
 		$('li.tab a').removeClass('menu-active');
 		$('div#pod').hide();
 		$('div#critic').hide();
+		$('div#git').hide();
 		$('div.pod-menu').hide();
 		$('#info-link').addClass('menu-active');
 		$('#info').show();

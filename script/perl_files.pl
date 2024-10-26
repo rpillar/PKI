@@ -256,7 +256,7 @@ sub _collect_gitlog_data {
 
 =head2 _collect_pod_data
 
-Returns a 1 / 0 depending on whether the B<file> contains POD
+Returns a 1 / 2 depending on whether the B<file> contains POD
 
 =cut
 

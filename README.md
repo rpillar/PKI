@@ -46,6 +46,7 @@ To run the app - at the command line :-
 # Updates
  - refactor Controller code - introduce a *Service* layer that will contain the code to *get the data* - create 
  a *thin* controller.
+ - investigate whether the POD generation can be replaced with `App::sdview`
  - Add code to process roles - *with* / also *require*
  - distinguish between internal / external dependencies
  - Add module dependency graphs
@@ -53,6 +54,7 @@ To run the app - at the command line :-
  - Add flag so that interface / scripts *only* process source files - not GIT
  - Would it be possible - add a process that will analyse scripts for POD and allow the "user' to
  document dependencies / tables used and updated etc. 
+ - Make Perl::Critic settings 'flexible' - create a 'settings' function where the 'user' could set the location of _critic_ file (env var `PERLCRITIC`) or state the _theme_ required. A settings _function_ could support user settings for other _things_.
 
  # Further Notes
 
