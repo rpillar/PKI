@@ -11,7 +11,7 @@ The config file - `./script/modulelib.conf` - holds the full path to libraries t
 
 As an example of this difference - for the Dancer web framework the git data would be downloaded from https://github.com/PerlDancer/Dancer.git and the source code (for POD) is downloaded from CPAN (https://metacpan.org/pod/Dancer).
 
-### `./script/modulelib.conf`
+### `./script/config/modulelib.conf`
 
 ```
 {
@@ -20,7 +20,7 @@ As an example of this difference - for the Dancer web framework the git data wou
 }
 ```
 
-### `./script/runlib.conf`
+### `./script/config/runlib.conf`
 
 ```
 {
@@ -49,12 +49,17 @@ To run the app - at the command line :-
  - investigate whether the POD generation can be replaced with `App::sdview`
  - Add code to process roles - *with* / also *require*
  - distinguish between internal / external dependencies
+ - when you have code from multiple repos then distinguish between them
  - Add module dependency graphs
  - Fix links within POD
  - Add flag so that interface / scripts *only* process source files - not GIT
  - Would it be possible - add a process that will analyse scripts for POD and allow the "user' to
  document dependencies / tables used and updated etc. 
  - Make Perl::Critic settings 'flexible' - create a 'settings' function where the 'user' could set the location of _critic_ file (env var `PERLCRITIC`) or state the _theme_ required. A settings _function_ could support user settings for other _things_.
+ - possible bug when rerunning the _main_ script without the `initialize` option - subroutine data duplicated - check.
+ - create a _reporting_ tab - would display _general_ info on the source code being _viewed_.
+ - complexity _history_ - module / script change metrics
+ - migrate to `materializeweb` (`materializecss` is not being maintained).
 
  # Further Notes
 

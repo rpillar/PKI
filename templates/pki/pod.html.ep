@@ -233,11 +233,11 @@
           </ul>
         </div>
     % }
-	% if (@$dependencies) {
+	% if (@$internal_dependencies) {
     	<div>
-        	<h2><span style="border-bottom:3px solid lightblue;">Dependencies</span></h2>
+        	<h2><span style="border-bottom:3px solid lightblue;">Internal Dependencies</span></h2>
         	<ul class="collection">
-          		% foreach my $dependency (@$dependencies) {
+          		% foreach my $dependency (@$internal_dependencies) {
             		<li class="collection-item"><a href="/pod/<%= $dependency %>/0"><%= $dependency %></a></li>
           		% }
         	</ul>
@@ -246,7 +246,23 @@
 	% else {
 		<div class="perl-data">
 			<h2><span style="border-bottom:3px solid lightblue;">Dependencies</span></h2>
-			<p style="font-size:22px;">This module has no dependencies.</p>
+			<p style="font-size:22px;">This module has no internal dependencies.</p>
+		</div>
+	% }
+	% if (@$external_dependencies) {
+    	<div>
+        	<h2><span style="border-bottom:3px solid lightblue;">External Dependencies</span></h2>
+        	<ul class="collection">
+          		% foreach my $dependency (@$external_dependencies) {
+            		<li class="collection-item"><a href="/pod/<%= $dependency %>/0"><%= $dependency %></a></li>
+          		% }
+        	</ul>
+    	</div>
+	% }
+	% else {
+		<div class="perl-data">
+			<h2><span style="border-bottom:3px solid lightblue;">Dependencies</span></h2>
+			<p style="font-size:22px;">This module has no external dependencies.</p>
 		</div>
 	% }
 	% if (@$complexities) {

@@ -102,13 +102,21 @@
     $('nav.nav-extended').append('<div class="nav-content" style="background-color: #263238;">'
       + '<div class="container" style="padding:0 70px;">'
       + '<ul class="tabs tabs-transparent">'
-      + '<li class="tab"><a id="poddata-link"href="#" class="menu-active" style="font-size:22px">Modules</a></li>'
+      + '<li class="tab"><a id="poddata-link"href="#" style="font-size:22px">Modules</a></li>'
       + '<li class="tab"><a id="gitdata-link" href="#" style="font-size:22px">Git Stats</a></li>'
       + '</ul>'
       + '</div>'
 		  + '</div>'
 	  );
-
+/*
+      + '<li class="tab"><a id="code-info-link"href="#" class="menu-active" style="font-size:22px">Info</a></li>'
+*/    
+    $('#code-info-link').on('click', () => {
+      $('li.tab a').removeClass('menu-active');
+      $('.perl-data').hide();
+      $('#code-info-link').addClass('menu-active');
+      $('#code-info-data').show();
+	  });
     $('#gitdata-link').on('click', () => {
       $('li.tab a').removeClass('menu-active');
       $('.perl-data').hide();

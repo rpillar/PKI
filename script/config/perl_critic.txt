@@ -1,0 +1,22 @@
+severity  = 4
+exclude   = ProhibitExplicitReturnUndef ProhibitCommaSeparatedStatements RequireEndWithOne RequireFinalReturn ProhibitBuiltinHomonyms Subroutines::RequireArgUnpacking Subroutines::ProhibitSubroutinePrototypes
+
+[Modules::RequireExplicitPackage]
+exempt_scripts = 0
+allow_import_of = utf8
+
+[Subroutines::RequireArgUnpacking]
+short_subroutine_statements = 2
+
+[TestingAndDebugging::ProhibitNoWarnings]
+allow = experimental::signatures
+
+[InputOutput::RequireBriefOpen]
+lines = 17
+
+[InputOutput::RequireCheckedSyscalls]
+# only check the following functions, perldoc the module for full list
+functions = chdir chmod chown mkdir open opendir read readdir symlink unlink rename
+
+[ValuesAndExpressions::PreventSQLInjection]
+quoting_methods = 'quote quote_identifier'

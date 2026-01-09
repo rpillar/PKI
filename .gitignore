@@ -4,3 +4,6 @@ script/modulelib.conf
 script/runlib.conf
 script/hypnotoad.pid
 .DS_Store
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.github/instructions/snyk_rules.instructions.md

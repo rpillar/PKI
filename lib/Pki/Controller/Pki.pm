@@ -68,7 +68,7 @@ Retrieve POD, dependency data, inheritance data and gitlog data - render templat
 sub pod {
   my ( $self ) = @_;
 
-  my $config = Config::JSON->new("./script/runlib.conf");
+  my $config = Config::JSON->new("./script/config/runlib.conf");
 
   my $module    = $self->param( 'module' );
   my $pod_score = $self->param( 'pod_score' );
@@ -103,15 +103,16 @@ sub pod {
     $output =~ s/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>/\<li\>\<a href=\"\#METHODS\"\>METHODS\<\/a\>\<\/li\>/;
   }
 
-  my ( $dependency_data, $inheritance_data, $role_data, $complexity_data, $summary_stats_data ) = $self->_info( $module );
-  my $gitlog                                             = $self->_gitlog( $module );
+  my ( $dependency_data_internal, $dependency_data_external, $inheritance_data, $role_data, $complexity_data, $summary_stats_data ) = $self->_info( $module );
+  my $gitlog = $self->_gitlog( $module );
 
   # Render template "pki/pod.html.ep" with pod output
   $self->render(
     template     => 'pki/pod', 
     pod          => $output, 
     pod_score    => $pod_score,
-    dependencies => $dependency_data, 
+    internal_dependencies => $dependency_data_internal,
+    external_dependencies => $dependency_data_external, 
     inheritance  => $inheritance_data,
     role         => $role_data,
     complexities => $complexity_data,
@@ -197,8 +198,20 @@ sub _info {
   my $dependency_data                       = decode_json( $dependency_jsondata );
 
   # check whether the dependencies are internal / external
-  my $dependency_hash;
-  foreach ( @{ $dependency_data }) {
+  my @dependency_data_internal;
+  my @dependency_data_external;
+
+  my $check_dependency_query = "select module from summary where module = ?";
+  my $check_dependency_stmt  = $dbh->prepare( $check_dependency_query );
+  foreach ( @{ $dependency_data } ) {
+    $check_dependency_stmt->execute( $_ );
+    my ( $dependent_module_name ) = $check_dependency_stmt->fetchrow_array;
+    if ( defined $dependent_module_name ) {
+      push @dependency_data_internal, $dependent_module_name;
+    }
+    else {
+      push @dependency_data_external, $_; 
+    }
   }
 
   # get inheritance data
@@ -227,7 +240,7 @@ sub _info {
   $summary_stats_stmt->execute( $module );
   my $summary_stats_data = $summary_stats_stmt->fetchrow_hashref();
 
-  return ( $dependency_data, $inheritance_data, $role_data, $complexity_data, $summary_stats_data );
+  return ( \@dependency_data_internal, \@dependency_data_external, $inheritance_data, $role_data, $complexity_data, $summary_stats_data );
 }
 
 =head2 _is_ours

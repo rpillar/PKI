@@ -37,7 +37,7 @@ my $analyzer = Perl::Metrics::Simple->new;
 my $libs;
 
 # try to import every .pm file in /lib
-my $config = Config::JSON->new("./script/modulelib.conf");
+my $config = Config::JSON->new("./script/config/modulelib.conf");
 
 my $module_count = 0;
 foreach ( @{ $config->get( 'libs' ) } ) {
@@ -84,7 +84,8 @@ sub _collect_critic_data {
     my ( $module, $file ) = @_;
 
     my @critic_data = ();
-    my $critic = Perl::Critic->new( -severity => 3, -theme => "maintenance" ); 
+    my $critic = Perl::Critic->new(  -severity => 3, -theme => "maintenance" ); 
+    #my $critic = Perl::Critic->new(  -profile => "./config/perl_critic.txt" ); 
     my @issues = $critic->critique($file->stringify); 
 
     foreach ( @issues ) { 
@@ -159,6 +160,9 @@ sub _collect_git_data {
 }
 
 =head2 _collect_git_commit_data
+
+This script collects 'statistics' - the number of git commits
+ made on a particular day. Data is loaded into the 'gitcommits' table.
 
 =cut
 
@@ -419,7 +423,9 @@ sub _initialize_data {
     return;
 }
 
-=head2 dependencies
+=head2 _parse_dependencies
+
+Try to work out the dependencies that exist for a particular package.
 
 =cut
 
